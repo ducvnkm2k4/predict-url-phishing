@@ -3,8 +3,9 @@ import shutil
 import os
 import pandas as pd  # Thêm pandas để lưu dataset dưới dạng CSV
 from ucimlrepo import fetch_ucirepo 
-from data_processing.merger_datasets import merge_dataset
+from data_processing.merge_datasets import merge_dataset
 from data_processing.char_probabilities import char_pro
+from data_processing.feature_engineering import feature_engineering
 import wget
 def download_and_move(url, save_path):
     """Tải dataset từ KaggleHub và lưu vào đúng thư mục"""
@@ -24,15 +25,15 @@ def download_and_move(url, save_path):
 def download_dataset():
     # 📌 Tải dataset từ KaggleHub
     url_data1 = 'sid321axn/malicious-urls-dataset'
-    save_path_data1 = 'dataset/data1'
+    save_path_data1 = 'dataset/data/data1'
     download_and_move(url_data1, save_path_data1)
 
     url_data2 = "shashwatwork/web-page-phishing-detection-dataset"
-    save_path_data2 = 'dataset/data2'
+    save_path_data2 = 'dataset/data/data2'
     download_and_move(url_data2, save_path_data2)
 
     # 📌 Tải dataset từ UCI và lưu vào dataset/data3/
-    save_path_data3 = 'dataset/data3'
+    save_path_data3 = 'dataset/data/data3'
     os.makedirs(save_path_data3, exist_ok=True)
 
     phiusiil_phishing_url_website = fetch_ucirepo(id=967)  
@@ -53,6 +54,7 @@ def main():
     download_dataset()
     merge_dataset()
     char_pro()
+    feature_engineering()
 
 if __name__ == "__main__":
     main()
