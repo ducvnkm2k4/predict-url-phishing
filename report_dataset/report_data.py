@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Đọc dữ liệu sau khi loại bỏ trùng lặp
-df = pd.read_csv('dataset/feature/data_train_processed.csv')
+df = pd.read_csv('dataset/feature/data_train.csv')
 
 # Tạo bảng thống kê cơ bản
 report = df.describe().T  # Xoay bảng để hiển thị theo cột

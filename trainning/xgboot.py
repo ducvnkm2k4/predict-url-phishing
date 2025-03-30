@@ -15,7 +15,7 @@ X_test = data_test.drop(columns=['label'])
 y_test = data_test['label']
 
 # Khởi tạo mô hình XGBoost
-model = xgb.XGBClassifier( )
+model = xgb.XGBClassifier(n_estimators=500,learning_rate=0.05,max_depth=10,subsample=0.8)
 
 # Huấn luyện mô hình
 print("🚀 Đang huấn luyện XGBoost...")
@@ -29,7 +29,7 @@ accuracy = accuracy_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 class_report = classification_report(y_test, y_pred)
 
-dump(model,"model/xgboot.pkl")
+dump(model,"dataset/model/xgboot.pkl")
 # In kết quả
 print(f"✅ Độ chính xác: {accuracy:.4f}")
 print("\n📌 Ma trận nhầm lẫn:\n", conf_matrix)

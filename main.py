@@ -37,7 +37,6 @@ def download_dataset():
     os.makedirs(save_path_data3, exist_ok=True)
 
     phiusiil_phishing_url_website = fetch_ucirepo(id=967)  
-
     # 📌 Lưu dataset dưới dạng CSV
     X = phiusiil_phishing_url_website.data.features
     y = phiusiil_phishing_url_website.data.targets
@@ -45,6 +44,11 @@ def download_dataset():
     X.to_csv(os.path.join(save_path_data3, "features.csv"), index=False)
     y.to_csv(os.path.join(save_path_data3, "targets.csv"), index=False)
 
+    #data5
+    url='kunal4892/phishingandlegitimateurls'
+    save_path_data5='dataset/data/data5'
+    download_and_move(url,save_path_data5)
+    
     # top 100k tranco
     url='https://tranco-list.eu/download/5897N/100000'
     top_100k_save_path="dataset/tranco_list"
@@ -54,7 +58,6 @@ def main():
     download_dataset()
     merge_dataset()
     char_pro()
-    feature_engineering()
 
 if __name__ == "__main__":
     main()

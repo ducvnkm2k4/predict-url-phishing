@@ -1,6 +1,5 @@
-dataset/feature
-dataset/raw
-dataset/ngram
+data_processing/feature
+data_processing/raw
 data_processing/__pycache__
 data_processing/pre_processing/__pycache__
 dataset/tranco_list/tranco_5897N.csv

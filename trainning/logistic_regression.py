@@ -29,7 +29,7 @@ accuracy = accuracy_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 class_report = classification_report(y_test, y_pred)
 
-dump(model,"model/logistic_regression.pkl")
+dump(model,"dataset/model/logistic_regression.pkl")
 # In kết quả
 print(f"✅ Độ chính xác: {accuracy:.4f}")
 print("\n📌 Ma trận nhầm lẫn:\n", conf_matrix)

@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Đọc dữ liệu
-data = pd.read_csv('dataset/feature/data_train_processed.csv')
+data = pd.read_csv('data_processing/feature/data_train.csv')
 
 # Tính ma trận tương quan
 correlation_matrix = data.corr()
