@@ -9,3 +9,4 @@ thư viện yêu cầu:
 - tf-keras
 - xgboot
 - statmodels
+- bs4

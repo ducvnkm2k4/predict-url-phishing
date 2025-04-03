@@ -4,59 +4,91 @@ import pandas as pd
 import scipy.stats as stats
 
 def show_feature_distribution(data, feature):
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))  # Tạo lưới 2x2
-    axes = axes.flatten()  # Chuyển mảng về 1D
+    """Hiển thị 4 biểu đồ cho một đặc trưng trong một cửa sổ duy nhất"""
+    fig, axes = plt.subplots(2,2, figsize=(12, 10))  # Chỉ tạo một figure
 
-    # Histogram (phân bố dữ liệu)
-    sns.histplot(data[feature], bins=30, kde=True, ax=axes[0], color="blue")
-    axes[0].set_title(f"Histogram của {feature}")
-    
-    # Boxplot (phát hiện outliers)
-    sns.boxplot(x=data[feature], ax=axes[1], color="orange")
-    axes[1].set_title(f"Boxplot của {feature}")
-    
-    # QQ Plot (kiểm tra phân phối chuẩn)
-    stats.probplot(data[feature], dist="norm", plot=axes[2])
-    axes[2].set_title(f"QQ Plot của {feature}")
-    
-    # Violin Plot (so sánh mật độ dữ liệu)
-    sns.violinplot(x=data[feature], ax=axes[3], color="green")
-    axes[3].set_title(f"Violin Plot của {feature}")
+    print(f'---------- Skewness của {feature} ----------')
+    print(data.skew())
 
-    plt.tight_layout()  # Tránh chồng chéo nội dung
+    # Histogram
+    sns.histplot(data, bins=30, kde=True, ax=axes[0, 0], color="blue")
+    axes[0, 0].set_title(f"Histogram của {feature}")
+    
+    # Boxplot
+    sns.boxplot(x=data, ax=axes[0, 1], color="orange")
+    axes[0, 1].set_title(f"Boxplot của {feature}")
+    
+    # QQ Plot
+    stats.probplot(data, dist="norm", plot=axes[1, 0])
+    axes[1, 0].set_title(f"QQ Plot của {feature}")
+    
+    # Violin Plot
+    sns.violinplot(x=data, ax=axes[1, 1], color="green")
+    axes[1, 1].set_title(f"Violin Plot của {feature}")
+
+    plt.tight_layout()
     plt.show()
 
+def show_histogram(data, feature_names):
+    fig, axes = plt.subplots(4, 5, figsize=(16, 12))  # 4 hàng, 5 cột
+    
+    for i, feature in enumerate(feature_names):
+        row, col = i // 5, i % 5  # Đúng công thức: hàng = i // 5, cột = i % 5
+        sns.histplot(x=data[feature], bins=30, kde=True, ax=axes[row, col], color="blue")
+        # axes[row, col].set_title(f"Histogram của {feature}")
+    
+    # Ẩn các ô trống nếu feature_names không đủ 20
+    for j in range(len(feature_names), 20):
+        fig.delaxes(axes.flatten()[j])
+    
+    plt.tight_layout()
+    plt.show()
+
+def show_boxplot(data, feature_names):
+    fig, axes = plt.subplots(4, 5, figsize=(16, 12))  # 4 hàng, 5 cột
+    
+    for i, feature in enumerate(feature_names):
+        row, col = i // 5, i % 5  # Đúng công thức: hàng = i // 5, cột = i % 5
+        sns.boxplot(data[feature], ax=axes[row, col], color="orange")
+        # axes[row, col].set_title(f"Histogram của {feature}")
+    
+    # Ẩn các ô trống nếu feature_names không đủ 20
+    for j in range(len(feature_names), 20):
+        fig.delaxes(axes.flatten()[j])
+    
+    plt.tight_layout()
+    plt.show()
+
+def show_probplot(data, feature_names):
+    fig, axes = plt.subplots(4, 5, figsize=(16, 12))  # 4 hàng, 5 cột
+    
+    for i, feature in enumerate(feature_names):
+        row, col = i // 5, i % 5  # Đúng công thức: hàng = i // 5, cột = i % 5
+        stats.probplot(data[feature], dist="norm", plot=axes[row,col])
+        axes[row, col].set_title(f" {feature}")
+    
+    # Ẩn các ô trống nếu feature_names không đủ 20
+    for j in range(len(feature_names), 20):
+        fig.delaxes(axes.flatten()[j])
+    
+    plt.tight_layout()
+    plt.show()
 # Đọc dữ liệu
-data_train = pd.read_csv('data_processing/feature/data_train.csv')
+data_train = pd.read_csv('data_processing/feature/data_train_processed.csv')
 
 feature_names = [
-    "length", "tachar", "hasKeyWords", "hasspecKW", "tahex", "tadigit", 
-    "numDots","taslash", "countUpcase", "numvo", "numco", "backslash",
-    "maxsub30", "rapath","haspro", "hasExe", "redirect", "hasref",
-    "hasIP", "hasport", "numsdm", "radomain","tinyUrl", "tanv", 
-    "tanco", "tandi", "tansc", "tanhe", "is_digit",
-    "domain_len", "ent_char", "eod", "rank", "tld", "label"
-    ]
-# Chọn đặc trưng để vẽ
-feature = feature_names[10]
+    "length", "tachar", "tahex", "tadigit", 
+    "numDots","taslash", "countUpcase", "numvo", "numco",
+     "rapath", "numsdm", "radomain", "tanv", 
+    "tanco", "tandi", "tansc",
+    "domain_len", "ent_char", "eod",
+]
 
-'''
-    - 0.length: lệch trái
-    - 1.tarchar: outlier -> lệch trái
-    - 2.hasKeyWords: tạm bỏ 
-    - 3.hasspecKW: tạm bỏ
-    - 4.tahex: lệch trái
-    - 5.tadigit: có ngoại lệ nhỏ và lệch trái 
-    - 6.numDots: lệch trái
-    - 7.taslash: có ngoại lệ 
-    - 8.countUpcase: ổn
-    - 9.numvo: ngoại lệ
-    - 10.numco: ngoại lệ -> xử lý phân phối(không rõ trái hay phải)
-    backslash,
-    maxsub30, rapath,haspro, hasExe, redirect, hasref,
-    hasIP, hasport, numsdm, radomain,tinyUrl, tanv, 
-    tanco, tandi, tansc, tanhe, is_digit,
-    domain_len, ent_char, eod, rank, tld, label
-'''
-# Hiển thị biểu đồ
-show_feature_distribution(data_train, feature)
+show_histogram(data_train,feature_names)
+
+
+# feature=feature_names[0]
+# show_feature_distribution(data_train[feature], feature)
+# Hiển thị từng đặc trưng trong một cửa sổ riêng biệt
+# for feature in feature_names:
+#     show_feature_distribution(data_train[feature], feature)

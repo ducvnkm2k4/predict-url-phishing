@@ -3,8 +3,8 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import pandas as pd
 from joblib import dump
 # Load dữ liệu
-data_train = pd.read_csv('dataset/feature/data_train.csv')
-data_test = pd.read_csv('dataset/feature/data_test.csv')
+data_train = pd.read_csv('data_processing/feature/data_train.csv')
+data_test = pd.read_csv('data_processing/feature/data_test.csv')
 
 # Tách đặc trưng (X) và nhãn (y)
 X_train = data_train.drop(columns=['label'])  # Loại bỏ cột label để lấy đặc trưng
@@ -29,7 +29,7 @@ accuracy = accuracy_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 class_report = classification_report(y_test, y_pred)
 
-dump(model,"dataset/model/logistic_regression.pkl")
+dump(model,"model/logistic_regression.pkl")
 # In kết quả
 print(f"✅ Độ chính xác: {accuracy:.4f}")
 print("\n📌 Ma trận nhầm lẫn:\n", conf_matrix)
