@@ -25,9 +25,13 @@ char_probabilities = pd.read_csv('dataset/tranco_list/char_probabilities.csv').s
 special_chars = "`%^&*;@!?#=+$|"
 special_chars_domain=".-_"
 hex_pattern = re.compile(r'[a-fA-F0-9]{10,}')
-common_keywords = {"password", "login", "secure", "account", "index", "token", "signin", "update", "verify", "auth", "security"}
-sensitive_keywords = {"confirm", "submit", "payment", "invoice", "billing", "transaction", "transfer", "refund", "wire"}
-short_url_services = {"bit.ly", "goo.gl", "tinyurl.com", "is.gd", "t.co", "ow.ly", "cutt.ly", "shrtco.de", "rebrand.ly", "lnkd.in"}
+common_keywords = {
+    "password", "login", "secure", "account", "index", "token", "signin", 
+    "update", "verify", "auth", "security","confirm", "submit", "payment", 
+    "invoice", "billing", "transaction", "transfer", "refund", "wire"
+    }
+# sensitive_keywords = {"confirm", "submit", "payment", "invoice", "billing", "transaction", "transfer", "refund", "wire"}
+short_url_services =set( pd.read_csv('dataset/short_url_services.csv').drop_duplicates().iloc[:,0])
 redirect_keywords = {"redirect=", "url=", "next=", "dest=", "destination=", "forward=", "go=", "to="}
 
 ip_pattern = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
@@ -47,6 +51,7 @@ def extract_features(params):
     char_counts = Counter(domain)
     total_chars = sum(char_counts.values())
     domain_char_probabilities = {char: count / total_chars for char, count in char_counts.items()}
+    
     # Tính toán các đặc trưng trên url
     # 1.length: độ dài URL
     length = length  
@@ -55,7 +60,7 @@ def extract_features(params):
     # hasKeyWords: URL chứa từ khóa phổ biến
     hasKeyWords = int(any(kw in url.lower() for kw in common_keywords)) 
     # hasspecKW: URL chứa từ khóa nhạy cảm
-    hasspecKW = int(any(kw in url.lower() for kw in sensitive_keywords)) 
+    # hasspecKW = int(any(kw in url.lower() for kw in sensitive_keywords)) 
     # tahex: tỷ lệ chuỗi hex trong URL
     tahex = round(sum(len(match) for match in re.findall(hex_pattern, url)) / length,15) 
     # tadigit: tỷ lệ chữ số trong URL 
@@ -75,15 +80,15 @@ def extract_features(params):
     # haspro: có chứa http, https, www hay không
     haspro = 1 if urlparse(url).scheme in {"http", "https"} or parsed_url.netloc.startswith("www.") else 0
     # hasref: URL chứa tham số theo dõi
-    hasref = int(any(kw in parsed_url.query.lower() for kw in ["ref=", "cdm=", "track=", "utm="]) 
-                and "href=" not in parsed_url.query.lower() 
-                and "notrack=1" not in parsed_url.query.lower())
+    # hasref = int(any(kw in parsed_url.query.lower() for kw in ["ref=", "cdm=", "track=", "utm="]) 
+    #             and "href=" not in parsed_url.query.lower() 
+    #             and "notrack=1" not in parsed_url.query.lower())
 
     # Đặc trưng tên miền
     # hasIP: URL chứa địa chỉ IP
-    hasIP = int(is_domain_ip is not None)  
-    # hasport: URL có chứa số cổng
-    hasport = int(parsed_url.port is not None)  
+    # hasIP = int(is_domain_ip is not None)  
+    # # hasport: URL có chứa số cổng
+    # hasport = int(parsed_url.port is not None)  
     # numsdm: số lượng subdomain trong tên miền
     numsdm = 0 if is_domain_ip else domain.count('.') - 1 
     # radomain: tỷ lệ độ dài của domain so với tên miền
@@ -99,7 +104,7 @@ def extract_features(params):
     # tansc: tỷ lệ ký tự đặc biệt trong tên miền
     tansc = round(sum(1 for char in domain if char in special_chars_domain) / len(domain),15) if domain else 0  
     # is_digit: tên miền bắt đầu bằng số
-    is_digit = int(domain[0].isdigit()) if domain else 0  
+    # is_digit = int(domain[0].isdigit()) if domain else 0  
     # len: độ dài tên miền
     domain_length = len(domain) if domain else 0  
     # ent_char: entropy của ký tự trong tên miền
@@ -110,9 +115,9 @@ def extract_features(params):
     rank = 0 if is_domain_ip else int( extracted.registered_domain in top_100k_tranco_list) 
     # tld: tên miền thuộc TLD phổ biến
     tld = 0 if is_domain_ip else int(extracted.suffix in {"com", "net", "org", "edu", "gov"})  
-    hasdoubleslash=1 if url.count('//') - 1 > 1 else 0
+    # hasdoubleslash=1 if url.count('//') - 1 > 1 else 0
     # hasSuspiciousTld: một số tld phổ biến của url phishing
-    hasSuspiciousTld =0 if is_domain_ip else int( extracted.registered_domain in {'.tk', '.ml', '.cf', '.ga', '.gq'})
+    hasSuspiciousTld =0 if is_domain_ip else int( extracted.suffix in {'tk', 'ml', 'cf', 'ga', 'gq'})
 
     # return [
     #     length, tachar, hasKeyWords, hasspecKW, tahex, 
@@ -124,13 +129,13 @@ def extract_features(params):
     #     tld_phishing, label]
 
     return [
-        length, tachar, hasKeyWords, hasspecKW, tahex, 
+        length, tachar, hasKeyWords, tahex, 
         tadigit, numDots, countUpcase, numvo, numco, 
-        maxsub30, rapath, haspro, hasref, 
-        hasIP, hasport, numsdm, radomain, tinyUrl, tanv, 
-        tanco, tandi, tansc, is_digit, 
+        maxsub30, rapath, haspro, 
+         numsdm, radomain, tinyUrl, tanv, 
+        tanco, tandi, tansc,
         domain_length, ent_char, eod, rank, tld,
-        hasdoubleslash, hasSuspiciousTld, label]
+         hasSuspiciousTld, label]
 
 # **Hàm chạy multiprocessing**
 def parallel_feature_extraction(url_list, label_list):
@@ -150,23 +155,23 @@ if __name__ == "__main__":
     extracted_features_test = parallel_feature_extraction(data_test['url'], data_test['label'])
 
     # feature_names = [
-    #     "length", "tachar", "hasKeyWords", "hasspecKW", "tahex", "tadigit", 
-    #     "numDots","taslash", "countUpcase", "numvo", "numco", "backslash",
-    #     "maxsub30", "rapath","haspro", "hasExe", "redirect", "hasref",
-    #     "hasIP", "hasport", "numsdm", "radomain","tinyUrl", "tanv", 
-    #     "tanco", "tandi", "tansc", "tanhe", "is_digit",
-    #     "domain_len", "ent_char", "eod", "rank", "tld", "hasAtSymbol",
-    #     "hasdoubleslash","hasSuspiciousTld","queryLength" "label"
+    #      
+    #        
+    #    
+    #      
+    #     
+    #     "eod",
+    #     
     #     ]
 
     feature_names = [
-        "length", "tachar", "hasKeyWords", "hasspecKW", "tahex", 
+        "length", "tachar", "hasKeyWords","tahex", 
         "tadigit", "numDots", "countUpcase", "numvo", "numco",
-        "maxsub30", "rapath","haspro",  "hasref",
-        "hasIP","hasport", "numsdm", "radomain","tinyUrl", "tanv", 
-        "tanco", "tandi", "tansc",  "is_digit",
+        "maxsub30", "rapath","haspro",
+        "numsdm", "radomain","tinyUrl", "tanv", 
+        "tanco", "tandi", "tansc",
         "domain_len", "ent_char", "eod", "rank", "tld",
-        "hasdoubleslash","hasSuspiciousTld", "label"
+        "hasSuspiciousTld", "label"
         ]
 
 

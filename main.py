@@ -5,8 +5,18 @@ import pandas as pd
 from ucimlrepo import fetch_ucirepo 
 from data_processing.merge_datasets import merge_dataset
 from data_processing.char_probabilities import char_pro
-from data_processing.feature_engineering import feature_engineering
+from trainning.random_forest import train_random_forest
+from trainning.decision_tree import train_decision_tree
+from trainning.xgboot import train_xgboost
+from trainning.support_vector_machine import train_svm
+from trainning.KNN import train_knn
+from trainning.logistic_regression import train_logistic_regression
+import pandas as pd  
+
 import wget
+import sys
+import time
+sys.dont_write_bytecode = True
 def download_and_move(url, save_path):
     """Tải dataset từ KaggleHub và lưu vào đúng thư mục"""
     downloaded_path = kagglehub.dataset_download(url)
@@ -54,10 +64,40 @@ def download_dataset():
     top_100k_save_path="dataset/tranco_list"
     wget.download(url,top_100k_save_path)
 
+def train_model():
+    # Load dữ liệu
+    data_train = pd.read_csv('data_processing/feature/data_train.csv')
+    data_test = pd.read_csv('data_processing/feature/data_test.csv')
+    data_train_scaled = pd.read_csv('data_processing/feature/data_train_scaled.csv')
+    data_test_scaled = pd.read_csv('data_processing/feature/data_test_scaled.csv')
+    train_decision_tree(data_train,data_test,True)
+    print('-------------------time sleep-----------------')
+    time.sleep(1200)
+
+    train_xgboost(data_train,data_test,True)
+    print('-------------------time sleep-----------------')
+    time.sleep(1200)
+
+    train_random_forest(data_train,data_test,True)
+    print('-------------------time sleep-----------------')
+    time.sleep(1200)
+    
+    train_svm(data_train_scaled,data_test_scaled,True)
+    print('-------------------time sleep-----------------')
+    time.sleep(1200)
+
+    train_knn(data_train_scaled,data_test_scaled)
+    print('-------------------time sleep-----------------')
+    time.sleep(1200)
+    
+    train_logistic_regression(data_train_scaled,data_test_scaled,True)
+
+
 def main():
-    download_dataset()
-    merge_dataset()
-    char_pro()
+    # download_dataset()
+    # merge_dataset()
+    # char_pro()
+    train_model()
 
 if __name__ == "__main__":
     main()

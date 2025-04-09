@@ -30,7 +30,7 @@ def show_feature_distribution(data, feature):
     plt.show()
 
 def show_histogram(data, feature_names):
-    fig, axes = plt.subplots(4, 5, figsize=(16, 12))  # 4 hàng, 5 cột
+    fig, axes = plt.subplots(4,5, figsize=(16, 12))  # 4 hàng, 5 cột
     
     for i, feature in enumerate(feature_names):
         row, col = i // 5, i % 5  # Đúng công thức: hàng = i // 5, cột = i % 5
@@ -74,16 +74,16 @@ def show_probplot(data, feature_names):
     plt.tight_layout()
     plt.show()
 # Đọc dữ liệu
-data_train = pd.read_csv('data_processing/feature/data_train_processed.csv')
+data_train = pd.read_csv('data_processing/feature/data_train.csv')
 
 feature_names = [
-    "length", "tachar", "tahex", "tadigit", 
-    "numDots","taslash", "countUpcase", "numvo", "numco",
-     "rapath", "numsdm", "radomain", "tanv", 
+    "length", "tachar","tahex", 
+    "tadigit", "numDots", "countUpcase", "numvo", "numco",
+    "rapath",
+    "numsdm", "radomain","tanv", 
     "tanco", "tandi", "tansc",
-    "domain_len", "ent_char", "eod",
-]
-
+    "domain_len", "ent_char", "eod"
+    ]
 show_histogram(data_train,feature_names)
 
 

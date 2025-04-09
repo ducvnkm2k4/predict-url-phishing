@@ -1,7 +1,5 @@
 data_processing/feature
 data_processing/raw
-data_processing/__pycache__
-data_processing/pre_processing/__pycache__
 dataset/tranco_list/tranco_5897N.csv
 dataset/data/data1/malicious_phish.csv
 dataset/data/data2/dataset_phishing.csv
@@ -9,4 +7,6 @@ dataset/data/data3/features.csv
 dataset/data/data3/targets.csv
 dataset/data/data5/combined_dataset.csv
 dataset/tranco_list/char_probabilities.csv
-model
+__pycache__/
+**/__pycache__/
+**/**/__pycache__/
