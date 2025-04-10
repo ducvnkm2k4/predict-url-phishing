@@ -1,0 +1,12 @@
+thư viện yêu cầu: 
+- pandas
+- scikit-learn
+- tldextract
+- torch
+- transformers
+-> torch và transformers cho bert nếu cần
+- datasets
+- tf-keras
+- xgboot
+- statmodels
+- bs4
