@@ -25,5 +25,3 @@ def data_normalization(data_train,data_test):
     data_train_scaled.to_csv("src/data_processing/feature/data_train_scaled.csv", index=False)
     data_test_scaled.to_csv("src/data_processing/feature/data_test_scaled.csv", index=False)
     return [data_train_scaled,data_test_scaled]
-
-print("✅ Hoàn tất: xử lý ngoại lệ + scale + lưu file.")
