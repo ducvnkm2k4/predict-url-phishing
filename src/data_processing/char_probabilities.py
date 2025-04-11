@@ -2,7 +2,7 @@ import pandas as pd
 from collections import Counter
 
 def char_pro():
-    df = pd.read_csv("dataset/tranco_list/tranco_5897N.csv", header=None)
+    df = pd.read_csv("src/dataset/tranco_list/tranco_5897N.csv", header=None)
 
     print(df.head())
 
@@ -19,7 +19,7 @@ def char_pro():
 
     char_prob_df.sort_values(by='Character', ascending=True, inplace=True)
 
-    char_prob_df.to_csv("dataset/tranco_list/char_probabilities.csv", index=False)
+    char_prob_df.to_csv("src/dataset/tranco_list/char_probabilities.csv", index=False)
 
     print(char_prob_df)
     return char_prob_df

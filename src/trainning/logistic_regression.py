@@ -99,13 +99,13 @@ def train_logistic_regression(data_train, data_test, is_find_best_model=False):
     class_report = classification_report(y_test, y_pred)
 
     # Lưu mô hình và scaler
-    dump(best_model, "model/model/logistic_regression.pkl")
+    dump(best_model, "src/model/model/logistic_regression.pkl")
 
     # In kết quả
     print(f"✅ Độ chính xác trên tập test: {accuracy:.4f}")
     print("\n📌 Ma trận nhầm lẫn:\n", conf_matrix)
     print("\n📊 Báo cáo phân loại:\n", class_report)
-    with open("model/report/metrics_report_logistic.txt", "w", encoding="utf-8") as f:
+    with open("src/model/report/metrics_report_logistic.txt", "w", encoding="utf-8") as f:
         f.write("------------------logistic regression-----------------------")
         f.write(f"✅ Độ chính xác trên tập test: {accuracy:.4f}\n\n")
         f.write("📌 Ma trận nhầm lẫn:\n")
@@ -116,7 +116,7 @@ def train_logistic_regression(data_train, data_test, is_find_best_model=False):
 
 if __name__ == "__main__":
     # Load dữ liệu
-    data_train = pd.read_csv('data_processing/feature/data_train_scaled.csv')
-    data_test = pd.read_csv('data_processing/feature/data_test_scaled.csv')
+    data_train = pd.read_csv('src/data_processing/feature/data_train_scaled.csv')
+    data_test = pd.read_csv('src/data_processing/feature/data_test_scaled.csv')
     # Gọi hàm huấn luyện
     train_logistic_regression(data_train, data_test)

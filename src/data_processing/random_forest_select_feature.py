@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Giả sử bạn đã có một DataFrame với các đặc trưng và nhãn
 # Ví dụ: data_train chứa các đặc trưng và labels là cột nhãn
-data_train=pd.read_csv('data_processing/feature/data_train.csv')
+data_train=pd.read_csv('src/data_processing/feature/data_train.csv')
 X = data_train.drop('label', axis=1)  # Tất cả các đặc trưng
 y = data_train['label']  # Nhãn
 

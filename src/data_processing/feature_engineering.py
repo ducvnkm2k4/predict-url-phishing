@@ -8,7 +8,6 @@ from multiprocessing import Pool, cpu_count
 from tqdm import tqdm
 from collections import Counter
 import math
-from data_processing.pre_processing.delete_duplicate import delete_duplicate
 
 # Biến toàn cục cho multiprocessing
 char_probabilities = {}
@@ -23,7 +22,7 @@ common_keywords = {
     "update", "verify", "auth", "security", "confirm", "submit", "payment", 
     "invoice", "billing", "transaction", "transfer", "refund", "wire"
 }
-short_url_services = set(pd.read_csv('dataset/short_url_services.csv').drop_duplicates().iloc[:, 0])
+short_url_services = set(pd.read_csv('src/dataset/short_url_services.csv').drop_duplicates().iloc[:, 0])
 redirect_keywords = {"redirect=", "url=", "next=", "dest=", "destination=", "forward=", "go=", "to="}
 ip_pattern = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
 
@@ -95,14 +94,14 @@ def parallel_feature_extraction(url_list, label_list, char_probs, top_domains):
 
 if __name__ == "__main__":
     # Load dữ liệu
-    data_train = pd.read_csv('data_processing/raw/data_train_raw.csv')
-    data_test = pd.read_csv('data_processing/raw/data_test_raw.csv')
+    data_train = pd.read_csv('src/data_processing/raw/data_train_raw.csv')
+    data_test = pd.read_csv('src/data_processing/raw/data_test_raw.csv')
 
     # Đọc danh sách top 100k domain từ Tranco
-    top_100k_tranco_list = set(pd.read_csv('dataset/tranco_list/tranco_5897N.csv', header=None).iloc[:, 1].tolist())
+    top_100k_tranco_list = set(pd.read_csv('src/dataset/tranco_list/tranco_5897N.csv', header=None).iloc[:, 1].tolist())
 
     # Đọc bảng xác suất ký tự
-    char_probabilities = pd.read_csv('dataset/tranco_list/char_probabilities.csv').set_index('Character')['Probability'].to_dict()
+    char_probabilities = pd.read_csv('src/dataset/tranco_list/char_probabilities.csv').set_index('Character')['Probability'].to_dict()
 
     # Trích xuất đặc trưng
     extracted_features_train = parallel_feature_extraction(data_train['url'], data_train['label'], char_probabilities, top_100k_tranco_list)
@@ -121,7 +120,8 @@ if __name__ == "__main__":
     data_train_feature = pd.DataFrame(extracted_features_train, columns=feature_names)
     data_test_feature = pd.DataFrame(extracted_features_test, columns=feature_names)
 
-    delete_duplicate(data_train=data_train_feature, data_test=data_test_feature)
+    data_train_feature=data_train.drop_duplicates()
+    data_test_feature=data_test.drop_duplicates()
 
     print("✅ Trích xuất đặc trưng hoàn thành! 🚀")
 
@@ -132,64 +132,64 @@ if __name__ == "__main__":
 # length = length  
 # # 2.tachar: tỷ lệ ký tự đặc biệt trong URL
 # tachar = sum(1 for char in url if char in special_chars)
-# # hasKeyWords: URL chứa từ khóa phổ biến
+# # 3.hasKeyWords: URL chứa từ khóa phổ biến
 # hasKeyWords = int(any(kw in url.lower() for kw in common_keywords)) 
-# # hasspecKW: URL chứa từ khóa nhạy cảm
+# # 4.hasspecKW: URL chứa từ khóa nhạy cảm
 # # hasspecKW = int(any(kw in url.lower() for kw in sensitive_keywords)) 
-# # tahex: tỷ lệ chuỗi hex trong URL
+# # 5.tahex: tỷ lệ chuỗi hex trong URL
 # tahex = round(sum(len(match) for match in re.findall(hex_pattern, url)) / length,15) 
-# # tadigit: tỷ lệ chữ số trong URL 
+# # 6.tadigit: tỷ lệ chữ số trong URL 
 # tadigit = round(sum(1 for char in url if char.isdigit()) / length ,15) 
-# # numDots: số dấu chấm trong URL
+# # 7.numDots: số dấu chấm trong URL
 # numDots = url.count('.')
-# # countUpcase: số ký tự in hoa trong URL
+# # 8.countUpcase: số ký tự in hoa trong URL
 # countUpcase = sum(1 for char in url if char.isupper())
-# # numvo: tỷ lệ nguyên âm trong URL
+# # 9.numvo: tỷ lệ nguyên âm trong URL
 # numvo = round(sum(1 for char in url if char.lower() in "aeiou") / length,15)
-# # numco: tỷ lệ phụ âm trong URL
+# # 10.numco: tỷ lệ phụ âm trong URL
 # numco = round(sum(1 for char in url if char.isalpha() and char.lower() not in "aeiou") / length,15)  
-# # maxsub30: URL chứa chuỗi con dài >30 ký tự
+# # 11.maxsub30: URL chứa chuỗi con dài >30 ký tự
 # maxsub30 = int(any(len(sub) > 30 for sub in re.findall(r'\S+', url))) 
-# # rapath: độ dài đường dẫn so với toàn bộ URL 
+# # 12.rapath: độ dài đường dẫn so với toàn bộ URL 
 # rapath = round(len(parsed_url.path) / length,15) if parsed_url.path else 0 
-# # haspro: có chứa http, https, www hay không
+# # 13.haspro: có chứa http, https, www hay không
 # haspro = 1 if urlparse(url).scheme in {"http", "https"} or parsed_url.netloc.startswith("www.") else 0
-# # hasref: URL chứa tham số theo dõi
+# # 14.hasref: URL chứa tham số theo dõi
 # # hasref = int(any(kw in parsed_url.query.lower() for kw in ["ref=", "cdm=", "track=", "utm="]) 
 # #             and "href=" not in parsed_url.query.lower() 
 # #             and "notrack=1" not in parsed_url.query.lower())
 
 # # Đặc trưng tên miền
-# # hasIP: URL chứa địa chỉ IP
+# # 15.hasIP: URL chứa địa chỉ IP
 # # hasIP = int(is_domain_ip is not None)  
-# # # hasport: URL có chứa số cổng
+# # # 16.hasport: URL có chứa số cổng
 # # hasport = int(parsed_url.port is not None)  
-# # numsdm: số lượng subdomain trong tên miền
+# # 17.numsdm: số lượng subdomain trong tên miền
 # numsdm = 0 if is_domain_ip else domain.count('.') - 1 
-# # radomain: tỷ lệ độ dài của domain so với tên miền
+# # 18.radomain: tỷ lệ độ dài của domain so với tên miền
 # radomain = round(len(domain) / length if domain else 0,15)  
-# # tinyUrl: URL là dịch vụ rút gọn
+# # 19.tinyUrl: URL là dịch vụ rút gọn
 # tinyUrl= int(domain in short_url_services)  
-# # tanv: tỷ lệ nguyên âm trong tên miền
+# # 20.tanv: tỷ lệ nguyên âm trong tên miền
 # tanv = round(sum(1 for char in domain if char in "aeiou") / len(domain),15) if domain else 0  
-# # tanco: tỷ lệ phụ âm trong tên miền
+# # 21.tanco: tỷ lệ phụ âm trong tên miền
 # tanco = round(sum(1 for char in domain if char.isalpha() and char.lower() not in "aeiou") / len(domain),15) if domain else 0  
-# # tandi: tỷ lệ chữ số trong tên miền
+# # 22.tandi: tỷ lệ chữ số trong tên miền
 # tandi = round(sum(1 for char in domain if char.isdigit()) / len(domain),15) if domain else 0 
-# # tansc: tỷ lệ ký tự đặc biệt trong tên miền
+# # 23.tansc: tỷ lệ ký tự đặc biệt trong tên miền
 # tansc = round(sum(1 for char in domain if char in special_chars_domain) / len(domain),15) if domain else 0  
-# # is_digit: tên miền bắt đầu bằng số
+# # 24.is_digit: tên miền bắt đầu bằng số
 # # is_digit = int(domain[0].isdigit()) if domain else 0  
-# # len: độ dài tên miền
+# # 25.len: độ dài tên miền
 # domain_length = len(domain) if domain else 0  
-# # ent_char: entropy của ký tự trong tên miền
+# # 26.ent_char: entropy của ký tự trong tên miền
 # ent_char = round(-sum(p * math.log2(p) for p in domain_char_probabilities.values()),15) if domain else 0 
-# # eod của tên miền
+# # 27.eod của tên miền
 # eod = round(sum(domain.count(c) * char_probabilities.get(c, 0) for c in domain) / len(domain),15) if domain and char_probabilities else 0
-# # rank: tên miền thuộc top 100k của Tranco
+# # 28.rank: tên miền thuộc top 100k của Tranco
 # rank = 0 if is_domain_ip else int( extracted.registered_domain in top_100k_tranco_list) 
-# # tld: tên miền thuộc TLD phổ biến
+# # 29.tld: tên miền thuộc TLD phổ biến
 # tld = 0 if is_domain_ip else int(extracted.suffix in {"com", "net", "org", "edu", "gov"})  
-# # hasdoubleslash=1 if url.count('//') - 1 > 1 else 0
-# # hasSuspiciousTld: một số tld phổ biến của url phishing
+# # 30.hasdoubleslash=1 if url.count('//') - 1 > 1 else 0
+# # 31:hasSuspiciousTld: một số tld phổ biến của url phishing
 # hasSuspiciousTld =0 if is_domain_ip else int( extracted.suffix in {'tk', 'ml', 'cf', 'ga', 'gq'})

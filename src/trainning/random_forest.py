@@ -54,7 +54,7 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
         y_pred = model.predict(X_test)
         
         # Lưu mô hình
-        dump(model, "model/model/random_forest.pkl")
+        dump(model, "src/model/model/random_forest.pkl")
         
     # Đánh giá mô hình
     accuracy = accuracy_score(y_test, y_pred)
@@ -66,7 +66,7 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
     print("\n📌 Ma trận nhầm lẫn:\n", conf_matrix)
     print("\n📊 Báo cáo phân loại:\n", class_report)
 
-    with open("model/report/metrics_report_random_forest.txt", "w", encoding="utf-8") as f:
+    with open("src/model/report/metrics_report_random_forest.txt", "w", encoding="utf-8") as f:
         f.write("------------------random forest-----------------------")
         f.write(f"✅ Độ chính xác trên tập test: {accuracy:.4f}\n\n")
         f.write("📌 Ma trận nhầm lẫn:\n")
@@ -76,7 +76,7 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
 
 if __name__ == "__main__":
     # Load dữ liệu
-    data_train = pd.read_csv('data_processing/feature/data_train.csv')
-    data_test = pd.read_csv('data_processing/feature/data_test.csv')
+    data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
+    data_test = pd.read_csv('src/data_processing/feature/data_test.csv')
     # Gọi hàm với is_find_best_model=True để tìm tham số tốt nhất
     train_random_forest(data_train, data_test)

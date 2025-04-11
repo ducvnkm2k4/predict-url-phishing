@@ -6,13 +6,6 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import pandas as pd
 from joblib import dump
 
-
-def train_decision_tree(data_train, data_test, is_find_best_model=False):
-    # Tách đặc trưng (X) và nhãn (y)
-    X_train = data_train.drop(columns=['label'])
-    y_train = data_train['label']
-    X_test = data_test.drop(columns=['label'])
-    y_test = data_test['label']
 def train_decision_tree(data_train, data_test, is_find_best_model=False):
     # Tách đặc trưng (X) và nhãn (y)
     X_train = data_train.drop(columns=['label'])
@@ -62,14 +55,14 @@ def train_decision_tree(data_train, data_test, is_find_best_model=False):
     matrix = confusion_matrix(y_test, y_pred)
 
     # Lưu mô hình
-    dump(best_model, "model/model/decision_tree.pkl")
+    dump(best_model, "src/model/model/decision_tree.pkl")
 
     # In kết quả
     print(f"✅ Độ chính xác trên tập test: {accuracy:.4f}")
     print("\n📌 Ma trận nhầm lẫn:\n", matrix)
     print("\n📊 Báo cáo phân loại:\n", report)
     # Lưu vào file
-    with open("model/report/metrics_report_decision_tree.txt", "w", encoding="utf-8") as f:
+    with open("src/model/report/metrics_report_decision_tree.txt", "w", encoding="utf-8") as f:
         f.write("------------------decision tree-----------------------")
         f.write(f"✅ Độ chính xác trên tập test: {accuracy:.4f}\n\n")
         f.write("📌 Ma trận nhầm lẫn:\n")
@@ -79,7 +72,7 @@ def train_decision_tree(data_train, data_test, is_find_best_model=False):
 
 if __name__ == "__main__":
     # # Load dữ liệu
-    data_train = pd.read_csv('data_processing/feature/data_train.csv')
-    data_test = pd.read_csv('data_processing/feature/data_test.csv')
+    data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
+    data_test = pd.read_csv('src/data_processing/feature/data_test.csv')
     # Gọi hàm (True = tìm model tốt nhất, False = chạy với default)
     train_decision_tree(data_train, data_test, is_find_best_model=False)

@@ -47,13 +47,13 @@ def download_dataset():
     # download_and_move(url_data1, save_path_data1)
 
     url_data2 = "shashwatwork/web-page-phishing-detection-dataset"
-    save_path_data2 = 'dataset/data/data2'
-    save_path_data2 = 'dataset/data/data2'
+    save_path_data2 = 'src/dataset/data/data2'
+    save_path_data2 = 'src/dataset/data/data2'
     download_and_move(url_data2, save_path_data2)
 
     # 📌 Tải dataset từ UCI và lưu vào dataset/data3/
-    save_path_data3 = 'dataset/data/data3'
-    save_path_data3 = 'dataset/data/data3'
+    save_path_data3 = 'src/dataset/data/data3'
+    save_path_data3 = 'src/dataset/data/data3'
     os.makedirs(save_path_data3, exist_ok=True)
 
     phiusiil_phishing_url_website = fetch_ucirepo(id=967)  
@@ -63,21 +63,10 @@ def download_dataset():
 
     X.to_csv(os.path.join(save_path_data3, "features.csv"), index=False)
     y.to_csv(os.path.join(save_path_data3, "targets.csv"), index=False)
-
-    #data5
-    url='kunal4892/phishingandlegitimateurls'
-    save_path_data5='dataset/data/data5'
-    download_and_move(url,save_path_data5)
-    
-
-    #data5
-    url='kunal4892/phishingandlegitimateurls'
-    save_path_data5='dataset/data/data5'
-    download_and_move(url,save_path_data5)
     
     # top 100k tranco
     url='https://tranco-list.eu/download/5897N/100000'
-    top_100k_save_path="dataset/tranco_list"
+    top_100k_save_path="src/dataset/tranco_list"
     wget.download(url,top_100k_save_path)
 
 def train_model(data_train,data_test,data_train_scaled,data_test_scaled):
@@ -104,14 +93,15 @@ def train_model(data_train,data_test,data_train_scaled,data_test_scaled):
     train_logistic_regression(data_train_scaled,data_test_scaled,True)
 
 if __name__ == "__main__":
-    os.makedirs('data_processing/feature',exist_ok=True)
-    os.makedirs('model/model',exist_ok=True)
-    os.makedirs('model/report',exist_ok=True)
+    os.makedirs('src/data_processing/feature',exist_ok=True)
+    os.makedirs('src/data_processing/raw',exist_ok=True)
+    os.makedirs('src/model/model',exist_ok=True)
+    os.makedirs('src/model/report',exist_ok=True)
     download_dataset()
     data_train,data_test= merge_dataset()
     char_probabilities = char_pro().set_index('Character')['Probability'].to_dict()
     # Đọc danh sách top 100k domain từ Tranco
-    top_100k_tranco_list = set(pd.read_csv('dataset/tranco_list/tranco_5897N.csv', header=None).iloc[:, 1].tolist())
+    top_100k_tranco_list = set(pd.read_csv('src/dataset/tranco_list/tranco_5897N.csv', header=None).iloc[:, 1].tolist())
 
     extracted_features_train = parallel_feature_extraction(data_train['url'], data_train['label'], char_probabilities, top_100k_tranco_list)
     extracted_features_test = parallel_feature_extraction(data_test['url'], data_test['label'], char_probabilities, top_100k_tranco_list)
@@ -134,8 +124,12 @@ if __name__ == "__main__":
     data_train_feature=data_train.drop_duplicates()
     data_test_feature=data_test.drop_duplicates()
 
+    data_train_scaled,data_test_scaled = data_normalization(data_train_feature,data_test_feature)
+    train_model(data_train_feature,data_test_feature,data_train_scaled,data_test_scaled)
+
     data_train_feature.to_csv('data_processing/feature/data_train.csv',index=None)
     data_test_feature.to_csv('data_processing/feature/data_test.csv',index=None)
-
-    data_train_scaled,data_test_scaled = data_normalization()
-    train_model(data_train_feature,data_test_feature,data_train_scaled,data_test_scaled)
+    data_train.to_csv("src/data_processing/raw/data_train_raw.csv", index=False)
+    data_test.to_csv("src/data_processing/raw/data_test_raw.csv", index=False)
+    data_train_scaled.to_csv("src/data_processing/feature/data_train_scaled.csv", index=False)
+    data_test_scaled.to_csv("src/data_processing/feature/data_test_scaled.csv", index=False)

@@ -74,7 +74,7 @@ def show_probplot(data, feature_names):
     plt.tight_layout()
     plt.show()
 # Đọc dữ liệu
-data_train = pd.read_csv('data_processing/feature/data_train.csv')
+data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
 
 feature_names = [
     "length", "tachar", "hasKeyWords", "tahex", 
