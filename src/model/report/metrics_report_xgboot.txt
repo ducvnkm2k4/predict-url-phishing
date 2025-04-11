@@ -1,0 +1,15 @@
+------------------xgboot-----------------------✅ Độ chính xác trên tập test: 0.8283
+
+📌 Ma trận nhầm lẫn:
+[[8716  944]
+ [2429 7559]]
+
+📊 Báo cáo phân loại:
+              precision    recall  f1-score   support
+
+           0       0.78      0.90      0.84      9660
+           1       0.89      0.76      0.82      9988
+
+    accuracy                           0.83     19648
+   macro avg       0.84      0.83      0.83     19648
+weighted avg       0.84      0.83      0.83     19648

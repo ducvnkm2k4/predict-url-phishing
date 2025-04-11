@@ -82,22 +82,22 @@ def train_model(data_train,data_test,data_train_scaled,data_test_scaled):
     print('-------------------time sleep-----------------')
     time.sleep(1200)
     
-    train_svm(data_train_scaled,data_test_scaled,True)
-    print('-------------------time sleep-----------------')
-    time.sleep(1200)
+    # train_svm(data_train_scaled,data_test_scaled,True)
+    # print('-------------------time sleep-----------------')
+    # time.sleep(1200)
 
-    train_knn(data_train_scaled,data_test_scaled)
-    print('-------------------time sleep-----------------')
-    time.sleep(1200)
+    # train_knn(data_train_scaled,data_test_scaled)
+    # print('-------------------time sleep-----------------')
+    # time.sleep(1200)
     
-    train_logistic_regression(data_train_scaled,data_test_scaled,True)
+    # train_logistic_regression(data_train_scaled,data_test_scaled,True)
 
 if __name__ == "__main__":
     os.makedirs('src/data_processing/feature',exist_ok=True)
     os.makedirs('src/data_processing/raw',exist_ok=True)
     os.makedirs('src/model/model',exist_ok=True)
     os.makedirs('src/model/report',exist_ok=True)
-    download_dataset()
+    # download_dataset()
     data_train,data_test= merge_dataset()
     char_probabilities = char_pro().set_index('Character')['Probability'].to_dict()
     # Đọc danh sách top 100k domain từ Tranco
@@ -127,8 +127,8 @@ if __name__ == "__main__":
     data_train_scaled,data_test_scaled = data_normalization(data_train_feature,data_test_feature)
     train_model(data_train_feature,data_test_feature,data_train_scaled,data_test_scaled)
 
-    data_train_feature.to_csv('data_processing/feature/data_train.csv',index=None)
-    data_test_feature.to_csv('data_processing/feature/data_test.csv',index=None)
+    data_train_feature.to_csv('src/data_processing/feature/data_train.csv',index=None)
+    data_test_feature.to_csv('src/data_processing/feature/data_test.csv',index=None)
     data_train.to_csv("src/data_processing/raw/data_train_raw.csv", index=False)
     data_test.to_csv("src/data_processing/raw/data_test_raw.csv", index=False)
     data_train_scaled.to_csv("src/data_processing/feature/data_train_scaled.csv", index=False)

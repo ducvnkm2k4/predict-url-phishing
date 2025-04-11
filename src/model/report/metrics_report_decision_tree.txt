@@ -1,0 +1,15 @@
+✅ Độ chính xác trên tập test: 0.7757
+✅ Tham số tốt nhất: {'max_depth': 16}
+📌 Ma trận nhầm lẫn:
+[[8401 1259]
+ [3148 6840]]
+
+📊 Báo cáo phân loại:
+              precision    recall  f1-score   support
+
+           0       0.73      0.87      0.79      9660
+           1       0.84      0.68      0.76      9988
+
+    accuracy                           0.78     19648
+   macro avg       0.79      0.78      0.77     19648
+weighted avg       0.79      0.78      0.77     19648

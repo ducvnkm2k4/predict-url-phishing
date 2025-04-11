@@ -120,9 +120,12 @@ if __name__ == "__main__":
     data_train_feature = pd.DataFrame(extracted_features_train, columns=feature_names)
     data_test_feature = pd.DataFrame(extracted_features_test, columns=feature_names)
 
-    data_train_feature=data_train.drop_duplicates()
-    data_test_feature=data_test.drop_duplicates()
+    # ✅ Nếu bạn muốn loại bỏ dòng trùng lặp trong features:
+    data_train_feature = data_train_feature.drop_duplicates()
+    data_test_feature = data_test_feature.drop_duplicates()
 
+    data_train_feature.to_csv('src/data_processing/feature/data_train.csv',index=None)
+    data_test_feature.to_csv('src/data_processing/feature/data_test.csv',index=None)
     print("✅ Trích xuất đặc trưng hoàn thành! 🚀")
 
 

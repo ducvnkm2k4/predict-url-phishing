@@ -19,7 +19,7 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
 
     # Nếu is_find_best_model là True, sử dụng GridSearchCV để tìm tham số tốt nhất
     if is_find_best_model:
-        print("🚀 Đang tìm tham số tốt nhất cho RandomForest với 7 nhân...")
+        print("🚀 Đang tìm tham số tốt nhất cho RandomForest với...")
         param_grid = {
             'n_estimators': [100, 150, 200, 250,300],  # Số cây
             'max_depth': [10, 15, 20],  # Độ sâu tối đa
@@ -27,11 +27,11 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
         }
         
         # Khởi tạo mô hình Random Forest
-        rf = RandomForestClassifier(random_state=42, n_jobs=7)
+        rf = RandomForestClassifier(random_state=42, n_jobs=19)
         
         # Khởi tạo GridSearchCV
         grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, 
-                                   cv=5, n_jobs=7, verbose=2, scoring='accuracy')
+                                   cv=5, n_jobs=19, verbose=2, scoring='accuracy')
         
         # Tiến hành tìm kiếm tham số tốt nhất
         grid_search.fit(X_train, y_train)

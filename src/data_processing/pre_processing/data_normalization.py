@@ -15,7 +15,8 @@ def data_normalization(data_train,data_test):
     binary_cols = [col for col in data_train.columns if is_binary(data_train[col])]
     non_binary_cols = [col for col in data_train.columns if col not in binary_cols]
 
-
+    log_transform_feature = ['length', 'tachar', 'numdot','countUpcase','numsdm','domain_len','ent_char','eod']
+    # min_max_feature = ['tahex','tadigit','rapath','radomain','tandi','tansc']
 
     # --- Đảm bảo đúng thứ tự cột --- #
     data_train_scaled = data_train_scaled[data_train.columns]
