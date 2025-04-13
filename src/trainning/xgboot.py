@@ -28,7 +28,7 @@ def train_xgboost(data_train, data_test, is_find_best_model=False):
             estimator=base_model,
             param_grid=param_grid,
             cv=3,
-            n_jobs=7,
+            n_jobs=15,
             verbose=2,
             scoring='accuracy'
         )
@@ -81,5 +81,5 @@ if __name__ == "__main__":
     data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
     data_test = pd.read_csv('src/data_processing/feature/data_test.csv')
     # Gọi hàm để huấn luyện
-    train_xgboost(data_train, data_test)
+    train_xgboost(data_train, data_test,True)
 

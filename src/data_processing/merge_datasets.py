@@ -58,7 +58,7 @@ def merge_dataset():
     data_test = data7
     data_test = data_test[data_test["url"].apply(lambda x: x.isascii())]
     data_test = data_test.drop_duplicates()
-    
+    print
     return [data_train,data_test]
 
 if __name__ == "__main__":
