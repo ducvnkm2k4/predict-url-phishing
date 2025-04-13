@@ -1,36 +1,23 @@
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
 from joblib import dump
 import pandas as pd
 
-def train_knn(data_train, data_test,is_find_best_model=False):
+def train_knn(data_train, data_test):
     # Tách đặc trưng và nhãn
     X_train = data_train.drop(columns=['label'])
     y_train = data_train['label']
     
     X_test = data_test.drop(columns=['label'])
     y_test = data_test['label']
-    if is_find_best_model:
-        k_max=15
-        # GridSearchCV để tìm giá trị k tối ưu
-        param_grid = {
-            'n_neighbors': list(range(2, k_max + 1))  # từ 2 đến k_max
-        }
-        model = KNeighborsClassifier(n_jobs=-1)
-        
-        print(f"🔍 Đang tìm k tối ưu từ 2 đến {k_max}...")
-        grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy', verbose=1, n_jobs=-1)
-        grid_search.fit(X_train, y_train)
-        
-        best_model = grid_search.best_estimator_
-        best_k = grid_search.best_params_['n_neighbors']
-        print(f"✅ Best k: {best_k}")
-    else:
-        best_model = KNeighborsClassifier(n_neighbors=3)
-        best_model.fit(X_train,y_train)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    best_model = KNeighborsClassifier(n_neighbors=3)
+    best_model.fit(X_train_scaled,y_train)
     # Dự đoán
-    y_pred = best_model.predict(X_test)
+    y_pred = best_model.predict(X_test_scaled)
     
     # Đánh giá
     accuracy = accuracy_score(y_test, y_pred)

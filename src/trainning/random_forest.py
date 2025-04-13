@@ -9,52 +9,21 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
     # Tách đặc trưng (X) và nhãn (y)
     X_train = data_train.drop(columns=['label'])  # Loại bỏ cột label để lấy đặc trưng
     y_train = data_train['label']
-def train_random_forest(data_train, data_test, is_find_best_model=False):
-    # Tách đặc trưng (X) và nhãn (y)
-    X_train = data_train.drop(columns=['label'])  # Loại bỏ cột label để lấy đặc trưng
-    y_train = data_train['label']
 
     X_test = data_test.drop(columns=['label'])
     y_test = data_test['label']
+    # Khởi tạo mô hình Random Forest với các tham số mặc định
+    model = RandomForestClassifier(n_estimators=500, max_depth=15,random_state=42, n_jobs=-1)
+    
+    # Huấn luyện mô hình
+    print("🚀 Đang huấn luyện RandomForest...")
+    model.fit(X_train, y_train)
 
-    # Nếu is_find_best_model là True, sử dụng GridSearchCV để tìm tham số tốt nhất
-    if is_find_best_model:
-        print("🚀 Đang tìm tham số tốt nhất cho RandomForest với...")
-        param_grid = {
-            'n_estimators': [100, 150, 200, 250,300],  # Số cây
-            'max_depth': [10, 15, 20],  # Độ sâu tối đa
-            'bootstrap': [True, False]  # Sử dụng bootstrap hay không
-        }
-        
-        # Khởi tạo mô hình Random Forest
-        rf = RandomForestClassifier(random_state=42, n_jobs=19)
-        
-        # Khởi tạo GridSearchCV
-        grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, 
-                                   cv=5, n_jobs=19, verbose=2, scoring='accuracy')
-        
-        # Tiến hành tìm kiếm tham số tốt nhất
-        grid_search.fit(X_train, y_train)
-        
-        # In kết quả tham số tốt nhất
-        print(f"✅ Tham số tốt nhất: {grid_search.best_params_}")
-        print(f"✅ Độ chính xác tốt nhất: {grid_search.best_score_:.4f}")
-        
-        # Dự đoán trên tập test với mô hình tốt nhất
-        y_pred = grid_search.best_estimator_.predict(X_test)
-    else:
-        # Khởi tạo mô hình Random Forest với các tham số mặc định
-        model = RandomForestClassifier(n_estimators=200, max_depth=15,random_state=42, n_jobs=-1)
-        
-        # Huấn luyện mô hình
-        print("🚀 Đang huấn luyện RandomForest...")
-        model.fit(X_train, y_train)
-
-        # Dự đoán trên tập test
-        y_pred = model.predict(X_test)
-        
-        # Lưu mô hình
-        dump(model, "src/model/model/random_forest.pkl")
+    # Dự đoán trên tập test
+    y_pred = model.predict(X_test)
+    
+    # Lưu mô hình
+    dump(model, "src/model/model/random_forest.pkl")
         
     # Đánh giá mô hình
     accuracy = accuracy_score(y_test, y_pred)

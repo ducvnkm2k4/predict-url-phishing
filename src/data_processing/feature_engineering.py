@@ -61,7 +61,7 @@ def extract_features(params):
         int(any(len(s) > 30 for s in re.findall(r'\S+', url))),  # maxsub30
         round(len(parsed_url.path) / length, 15) if parsed_url.path else 0,  # rapath
         int(parsed_url.scheme in {"http", "https"} or parsed_url.netloc.startswith("www.")),  # haspro
-        0 if is_domain_ip else domain.count('.') - 1,  # numsdm
+        0 if is_domain_ip else len(extracted.subdomain.split('.')) if extracted.subdomain else 0,  # numsdm
         round(len(domain) / length, 15) if domain else 0,  # radomain
         int(domain in short_url_services),  # tinyUrl
         round(sum(c in "aeiou" for c in domain.lower()) / len(domain), 15) if domain else 0,  # tanv

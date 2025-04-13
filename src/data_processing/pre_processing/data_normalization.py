@@ -1,44 +1,47 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler,QuantileTransformer
+from sklearn.preprocessing import RobustScaler, MinMaxScaler,QuantileTransformer
 
 def data_normalization(data_train, data_test):
+    # --- Các nhóm đặc trưng theo loại chuẩn hóa --- #
+    log_transform_feature = ['length', 'tachar', 'numDots', 'countUpcase', 'numsdm', 'domain_len', 'ent_char', 'eod']
+    quantile_feature = ['radomain', 'rapath']
+    min_max_feature = ['tandi', 'tahex', 'tadigit', 'tanco']
+    robust_feature = ['numvo', 'numco', 'tanv', 'tansc']  
 
-    # --- Hàm kiểm tra nhị phân --- #
-    def is_binary(col):
-        return set(col.dropna().unique()) <= {0, 1}
-
-    # --- Xác định các cột nhị phân và không nhị phân --- #
-    binary_cols = [col for col in data_train.columns if is_binary(data_train[col])]
-
-    log_transform_feature = ['length', 'tachar', 'numdot', 'countUpcase', 'numsdm', 'domain_len', 'ent_char', 'eod']
-    standard_feature = ['radomain','rapath']
-    # --- Áp dụng log transform cho các feature cần thiết --- #
+    # --- Log transform --- #
     for col in log_transform_feature:
         if col in data_train.columns:
             data_train[col] = np.log1p(data_train[col])
             data_test[col] = np.log1p(data_test[col])
 
-    for col in standard_feature:
+    # --- QuantileTransformer --- #
+    for col in quantile_feature:
         if col in data_train.columns:
-            scaler = QuantileTransformer()
+            scaler = QuantileTransformer(output_distribution='normal')
             data_train[col] = scaler.fit_transform(data_train[[col]])
             data_test[col] = scaler.transform(data_test[[col]])
-    # --- Loại bỏ các cột nhị phân khỏi danh sách cần scale --- #
 
-    # --- Áp dụng StandardScaler cho các cột cần scale --- #
-    data_train_scaled = data_train.copy()
-    data_test_scaled = data_test.copy()
-    
+    # --- MinMaxScaler --- #
+    for col in min_max_feature:
+        if col in data_train.columns:
+            scaler = MinMaxScaler()
+            data_train[col] = scaler.fit_transform(data_train[[col]])
+            data_test[col] = scaler.transform(data_test[[col]])
 
-    # --- Đảm bảo đúng thứ tự cột --- #
-    data_train_scaled = data_train_scaled[data_train.columns]
-    data_test_scaled = data_test_scaled[data_test.columns]
+    # --- RobustScaler --- #
+    for col in robust_feature:
+        if col in data_train.columns:
+            scaler = RobustScaler()
+            data_train[col] = scaler.fit_transform(data_train[[col]])
+            data_test[col] = scaler.transform(data_test[[col]])
 
-    # --- Lưu ra file --- #
-    data_train_scaled.to_csv("src/data_processing/feature/data_train_scaled.csv", index=False)
-    data_test_scaled.to_csv("src/data_processing/feature/data_test_scaled.csv", index=False)
-    return [data_train_scaled, data_test_scaled]
+    # --- Ghi lại dữ liệu đã scale --- #
+    data_train.to_csv("src/data_processing/feature/data_train_scaled.csv", index=False)
+    data_test.to_csv("src/data_processing/feature/data_test_scaled.csv", index=False)
+
+    print("✅ Hoàn tất chuẩn hóa đặc trưng!")
+    return data_train, data_test
 
 
 if __name__ == '__main__':
