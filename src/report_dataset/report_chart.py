@@ -74,22 +74,21 @@ def show_probplot(data, feature_names):
     plt.tight_layout()
     plt.show()
 # Đọc dữ liệu
-data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
+data_train = pd.read_csv('src/data_processing/feature/data_train_scaled.csv')
 
 feature_names = [
-    "length", "tachar", "hasKeyWords", "tahex", 
+    "length", "tachar",  "tahex", 
     "tadigit", "numDots", "countUpcase", "numvo", "numco",
-    "maxsub30", "rapath", "haspro",
-    "numsdm", "radomain", "tinyUrl", "tanv", 
+    "rapath", 
+    "numsdm", "radomain", "tanv", 
     "tanco", "tandi", "tansc",
-    "domain_len", "ent_char", "eod", "rank", "tld",
-    "hasSuspiciousTld", "label"
+    "domain_len", "ent_char", "eod", 
 ]
-# show_probplot(data_train,feature_names)
+show_histogram(data_train,feature_names)
 
 
-feature=feature_names[0]
-show_feature_distribution(data_train[feature], feature)
+# feature=feature_names[0]
+# show_feature_distribution(data_train[feature], feature)
 # Hiển thị từng đặc trưng trong một cửa sổ riêng biệt
 # for feature in feature_names:
 #     show_feature_distribution(data_train[feature], feature)

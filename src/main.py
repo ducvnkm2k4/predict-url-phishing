@@ -2,7 +2,6 @@ import kagglehub
 import shutil
 import os
 import pandas as pd  
-from sympy import im
 from ucimlrepo import fetch_ucirepo 
 from data_processing.merge_datasets import merge_dataset
 from data_processing.merge_datasets import merge_dataset

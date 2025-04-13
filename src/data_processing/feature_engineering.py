@@ -120,7 +120,7 @@ if __name__ == "__main__":
     data_train_feature = pd.DataFrame(extracted_features_train, columns=feature_names)
     data_test_feature = pd.DataFrame(extracted_features_test, columns=feature_names)
 
-    data_train_feature=data_train.drop_duplicates()
+    data_train_feature=data_train_.drop_duplicates()
     data_test_feature=data_test.drop_duplicates()
 
     print("✅ Trích xuất đặc trưng hoàn thành! 🚀")
