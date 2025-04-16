@@ -24,12 +24,6 @@ def merge_dataset():
     data4['url'] = data4_raw['domain'].str.strip("'\"")
     data4["label"] = (data4_raw["label"] == 0.0).astype(int)
 
-    # Đọc dataset 5
-    data5_raw = pd.read_csv('src/dataset/data/data5/combined_dataset.csv')
-    data5 = pd.DataFrame()
-    data5["url"] = data5_raw["domain"].str.strip("'\"")
-    data5["label"] = (data5_raw["label"] == 0).astype(int)
-
     # Đọc dataset 6
     data6_legitimate = pd.read_csv('src/dataset/data/data6/extracted_legitmate_dataset.csv')
     data6_phishing = pd.read_csv('src/dataset/data/data6/extracted_phishing_dataset.csv')
@@ -49,7 +43,7 @@ def merge_dataset():
     data8_test["label"] = (data8_test["label"] == 'legitimate').astype(int)
 
     # Tạo data_train
-    data_train = pd.concat([data2, data3, data4, data6, data5, data8_test], ignore_index=True)
+    data_train = pd.concat([data2, data3, data4, data6, data8_test], ignore_index=True)
     data_train = data_train.dropna(subset=["url", "label"])
     data_train = data_train[data_train["url"].apply(lambda x: isinstance(x, str) and x.isascii())]
     data_train = data_train.drop_duplicates()
