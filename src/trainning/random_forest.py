@@ -13,7 +13,7 @@ def train_random_forest(data_train, data_test, is_find_best_model=False):
     X_test = data_test.drop(columns=['label'])
     y_test = data_test['label']
     # Khởi tạo mô hình Random Forest với các tham số mặc định
-    model = RandomForestClassifier(n_estimators=500, max_depth=15,random_state=42, n_jobs=-1)
+    model = RandomForestClassifier(n_estimators=300, max_depth=15,random_state=42, n_jobs=-1)
     
     # Huấn luyện mô hình
     print("🚀 Đang huấn luyện RandomForest...")

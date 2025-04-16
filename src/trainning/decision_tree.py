@@ -74,4 +74,4 @@ if __name__ == "__main__":
     data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
     data_test = pd.read_csv('src/data_processing/feature/data_test.csv')
     # Gọi hàm (True = tìm model tốt nhất, False = chạy với default)
-    train_decision_tree(data_train, data_test, is_find_best_model=True)
+    train_decision_tree(data_train, data_test)

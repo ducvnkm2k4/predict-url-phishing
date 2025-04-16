@@ -40,6 +40,7 @@ def extract_features(params):
     url, label = params
     url = url.strip("'\"")
     parsed_url = urlparse(url if urlparse(url).scheme else "http://" + url)
+
     extracted = tldextract.extract(url)
     domain = parsed_url.hostname or ""
     length = len(url)
@@ -49,32 +50,38 @@ def extract_features(params):
     domain_char_prob = {char: count / total_chars for char, count in char_counts.items()}
 
     features = [
-        length,
-        sum(1 for c in url if c in special_chars),  # tachar
-        int(any(kw in url.lower() for kw in common_keywords)),  # hasKeyWords
-        round(sum(len(m) for m in re.findall(hex_pattern, url)) / length, 15),  # tahex
-        round(sum(c.isdigit() for c in url) / length, 15),  # tadigit
-        url.count('.'),  # numDots
-        sum(c.isupper() for c in url),  # countUpcase
-        round(sum(c in "aeiou" for c in url.lower()) / length, 15),  # numvo
-        round(sum(c.isalpha() and c.lower() not in "aeiou" for c in url) / length, 15),  # numco
-        int(any(len(s) > 30 for s in re.findall(r'\S+', url))),  # maxsub30
-        round(len(parsed_url.path) / length, 15) if parsed_url.path else 0,  # rapath
-        int(parsed_url.scheme in {"http", "https"} or parsed_url.netloc.startswith("www.")),  # haspro
-        0 if is_domain_ip else len(extracted.subdomain.split('.')) if extracted.subdomain else 0,  # numsdm
-        round(len(domain) / length, 15) if domain else 0,  # radomain
-        int(domain in short_url_services),  # tinyUrl
-        round(sum(c in "aeiou" for c in domain.lower()) / len(domain), 15) if domain else 0,  # tanv
-        round(sum(c.isalpha() and c.lower() not in "aeiou" for c in domain) / len(domain), 15) if domain else 0,  # tanco
-        round(sum(c.isdigit() for c in domain) / len(domain), 15) if domain else 0,  # tandi
-        round(sum(c in special_chars_domain for c in domain) / len(domain), 15) if domain else 0,  # tansc
-        len(domain),  # domain_len
-        round(-sum(p * math.log2(p) for p in domain_char_prob.values()), 15) if domain else 0,  # ent_char
-        round(sum(domain.count(c) * char_probabilities.get(c, 0) for c in domain) / len(domain), 15) if domain and char_probabilities else 0,  # eod
-        0 if is_domain_ip else int(extracted.registered_domain in top_100k_tranco_list),  # rank
-        0 if is_domain_ip else int(extracted.suffix in {"com", "net", "org", "edu", "gov"}),  # tld
-        0 if is_domain_ip else int(extracted.suffix in {'tk', 'ml', 'cf', 'ga', 'gq'}),  # hasSuspiciousTld
-        label
+        length,  # 1. length
+        sum(1 for c in url if c in special_chars),  # 2. tachar
+        int(any(kw in url.lower() for kw in common_keywords)),  # 3. hasKeyWords
+        round(sum(len(m) for m in re.findall(hex_pattern, url)) / length, 15),  # 4. tahex
+        round(sum(c.isdigit() for c in url) / length, 15),  # 5. tadigit
+        url.count('.'),  # 6. numDots
+        sum(c.isupper() for c in url),  # 7. countUpcase
+        round(sum(c in "aeiou" for c in url.lower()) / length, 15),  # 8. numvo
+        round(sum(c.isalpha() and c.lower() not in "aeiou" for c in url) / length, 15),  # 9. numco
+        int(any(len(s) > 30 for s in re.findall(r'\S+', url))),  # 10. maxsub30
+        round(len(parsed_url.path) / length, 15) if parsed_url.path else 0,  # 11. rapath
+        1 if urlparse(url).scheme == "http"  else 0,
+        1 if urlparse(url).scheme == "https" else 0,
+        1 if parsed_url.netloc.startswith("www.") else 0,
+        # int(any(kw in parsed_url.query.lower() for kw in ["ref=", "cdm=", "track=", "utm="]) and "href=" not in parsed_url.query.lower() and "notrack=1" not in parsed_url.query.lower()),  # 13. hasref
+        # int(parsed_url.port is not None),  # 14. hasport
+        0 if is_domain_ip else len(extracted.subdomain.split('.')) if extracted.subdomain else 0,  # 15. numsdm
+        round(len(domain) / length, 15) if domain else 0,  # 16. radomain
+        # int(domain in short_url_services),  # 17. tinyUrl
+        round(sum(c in "aeiou" for c in domain.lower()) / len(domain), 15) if domain else 0,  # 18. tanv
+        round(sum(c.isalpha() and c.lower() not in "aeiou" for c in domain) / len(domain), 15) if domain else 0,  # 19. tanco
+        round(sum(c.isdigit() for c in domain) / len(domain), 15) if domain else 0,  # 20. tandi
+        round(sum(c in special_chars_domain for c in domain) / len(domain), 15) if domain else 0,  # 21. tansc
+        # int(domain[0].isdigit()) if domain else 0,  # 22. is_digit
+        len(domain),  # 23. domain_len
+        round(-sum(p * math.log2(p) for p in domain_char_prob.values()), 15) if domain else 0,  # 24. ent_char
+        round(sum(domain.count(c) * char_probabilities.get(c, 0) for c in domain) / len(domain), 15) if domain and char_probabilities else 0,  # 25. eod
+        0 if is_domain_ip else int(extracted.registered_domain in top_100k_tranco_list),  # 26. rank
+        0 if is_domain_ip else int(extracted.suffix in {"com", "net", "org", "edu", "gov"}),  # 27. tld
+        # 1 if url.count('//') - 1 > 1 else 0,  # 28. hasdoubleslash
+        0 if is_domain_ip else int(extracted.suffix in {'tk', 'ml', 'cf', 'ga', 'gq', 'xyz', 'top', 'cn', 'ru', 'work', 'club', 'site'}),  # 29. hasSuspiciousTld
+        label  # 30. label
     ]
 
     return features
@@ -108,14 +115,12 @@ if __name__ == "__main__":
     extracted_features_test = parallel_feature_extraction(data_test['url'], data_test['label'], char_probabilities, top_100k_tranco_list)
 
     feature_names = [
-        "length", "tachar", "hasKeyWords", "tahex", 
-        "tadigit", "numDots", "countUpcase", "numvo", "numco",
-        "maxsub30", "rapath", "haspro",
-        "numsdm", "radomain", "tinyUrl", "tanv", 
-        "tanco", "tandi", "tansc",
-        "domain_len", "ent_char", "eod", "rank", "tld",
-        "hasSuspiciousTld", "label"
+    "length", "tachar", "hasKeyWords", "tahex", "tadigit", "numDots", "countUpcase",
+    "numvo", "numco", "maxsub30", "rapath", 'http','https','www',  "numsdm",
+    "radomain", "tanv", "tanco", "tandi", "tansc",  "domain_len",
+    "ent_char", "eod", "rank", "tld", "hasSuspiciousTld", "label"
     ]
+
 
     data_train_feature = pd.DataFrame(extracted_features_train, columns=feature_names)
     data_test_feature = pd.DataFrame(extracted_features_test, columns=feature_names)
@@ -137,8 +142,6 @@ if __name__ == "__main__":
 # tachar = sum(1 for char in url if char in special_chars)
 # # 3.hasKeyWords: URL chứa từ khóa phổ biến
 # hasKeyWords = int(any(kw in url.lower() for kw in common_keywords)) 
-# # 4.hasspecKW: URL chứa từ khóa nhạy cảm
-# # hasspecKW = int(any(kw in url.lower() for kw in sensitive_keywords)) 
 # # 5.tahex: tỷ lệ chuỗi hex trong URL
 # tahex = round(sum(len(match) for match in re.findall(hex_pattern, url)) / length,15) 
 # # 6.tadigit: tỷ lệ chữ số trong URL 

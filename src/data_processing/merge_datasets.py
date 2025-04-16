@@ -46,13 +46,20 @@ def merge_dataset():
     data_train = pd.concat([data2, data3, data4, data6, data8_test], ignore_index=True)
     data_train = data_train.dropna(subset=["url", "label"])
     data_train = data_train[data_train["url"].apply(lambda x: isinstance(x, str) and x.isascii())]
+    print('-------------------data train--------------------------')
+    print(data_train)
     data_train = data_train.drop_duplicates()
-
+    print('-------------------data train delete duplicate--------------------------')
+    print(data_train)
+    
     # Tạo data_test
     data_test = data7
     data_test = data_test[data_test["url"].apply(lambda x: x.isascii())]
+    print('----------------------data test---------------------------')
+    print(data_test)
     data_test = data_test.drop_duplicates()
-    print
+    print('----------------------data test delete duplicate---------------------------')
+    print(data_test)
     return [data_train,data_test]
 
 if __name__ == "__main__":

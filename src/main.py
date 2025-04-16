@@ -20,9 +20,9 @@ def train_model(data_train,data_test):
     train_decision_tree(data_train,data_test)
     train_xgboost(data_train,data_test)
     train_random_forest(data_train,data_test)
-    train_svm(data_train,data_test)
     train_knn(data_train,data_test)
     train_logistic_regression(data_train,data_test)
+    train_svm(data_train,data_test)
 
 if __name__ == "__main__":
     os.makedirs('src/data_processing/feature',exist_ok=True)

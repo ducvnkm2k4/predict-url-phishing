@@ -9,7 +9,7 @@ X = data_train.drop('label', axis=1)  # Tất cả các đặc trưng
 y = data_train['label']  # Nhãn
 
 # Tạo và huấn luyện mô hình Random Forest
-model = RandomForestClassifier(n_estimators=200, random_state=42)
+model = RandomForestClassifier(n_estimators=200, max_depth=15,n_jobs=-1,random_state=42)
 model.fit(X, y)
 
 # Trích xuất các đặc trưng quan trọng
