@@ -1,8 +1,8 @@
-------------------random forest-----------------------✅ Độ chính xác trên tập test: 0.8539
+------------------random forest-----------------------✅ Độ chính xác trên tập test: 0.8538
 
 📌 Ma trận nhầm lẫn:
-[[8704  956]
- [1915 8073]]
+[[8707  953]
+ [1919 8069]]
 
 📊 Báo cáo phân loại:
               precision    recall  f1-score   support

@@ -4,8 +4,6 @@ from collections import Counter
 def char_pro():
     df = pd.read_csv("src/dataset/tranco_list/tranco_5897N.csv", header=None)
 
-    print(df.head())
-
     all_chars = ''.join(df.iloc[:, 1].astype(str))
 
     char_counts = Counter(all_chars)
