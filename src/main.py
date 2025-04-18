@@ -41,14 +41,12 @@ if __name__ == "__main__":
 
 
     feature_names = [
-        "length", "tachar", "hasKeyWords","tahex", 
-        "tadigit", "numDots", "countUpcase", "numvo", "numco",
-        "maxsub30", "rapath","haspro",
-        "numsdm", "radomain","tinyUrl", "tanv", 
-        "tanco", "tandi", "tansc",
-        "domain_len", "ent_char", "eod", "rank", "tld",
-        "hasSuspiciousTld", "label"
-        ]
+    "length", "tachar", "hasKeyWords", "tahex", "tadigit", "numDots", "countUpcase",
+    "numvo", "numco", "maxsub30", "rapath", 'http','https','www',  "numsdm",
+    "radomain", "tanv", "tanco", "tandi", "tansc",  "domain_len",
+    "ent_char", "eod", "rank", "tld", "hasSuspiciousTld", "label"
+    ]
+
 
 
     data_train_feature = pd.DataFrame(extracted_features_train, columns=feature_names)

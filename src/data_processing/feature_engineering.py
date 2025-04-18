@@ -64,22 +64,17 @@ def extract_features(params):
         1 if urlparse(url).scheme == "http"  else 0,
         1 if urlparse(url).scheme == "https" else 0,
         1 if parsed_url.netloc.startswith("www.") else 0,
-        # int(any(kw in parsed_url.query.lower() for kw in ["ref=", "cdm=", "track=", "utm="]) and "href=" not in parsed_url.query.lower() and "notrack=1" not in parsed_url.query.lower()),  # 13. hasref
-        # int(parsed_url.port is not None),  # 14. hasport
         0 if is_domain_ip else len(extracted.subdomain.split('.')) if extracted.subdomain else 0,  # 15. numsdm
         round(len(domain) / length, 15) if domain else 0,  # 16. radomain
-        # int(domain in short_url_services),  # 17. tinyUrl
         round(sum(c in "aeiou" for c in domain.lower()) / len(domain), 15) if domain else 0,  # 18. tanv
         round(sum(c.isalpha() and c.lower() not in "aeiou" for c in domain) / len(domain), 15) if domain else 0,  # 19. tanco
         round(sum(c.isdigit() for c in domain) / len(domain), 15) if domain else 0,  # 20. tandi
         round(sum(c in special_chars_domain for c in domain) / len(domain), 15) if domain else 0,  # 21. tansc
-        # int(domain[0].isdigit()) if domain else 0,  # 22. is_digit
         len(domain),  # 23. domain_len
         round(-sum(p * math.log2(p) for p in domain_char_prob.values()), 15) if domain else 0,  # 24. ent_char
         round(sum(domain.count(c) * char_probabilities.get(c, 0) for c in domain) / len(domain), 15) if domain and char_probabilities else 0,  # 25. eod
         0 if is_domain_ip else int(extracted.registered_domain in top_100k_tranco_list),  # 26. rank
         0 if is_domain_ip else int(extracted.suffix in {"com", "net", "org", "edu", "gov"}),  # 27. tld
-        # 1 if url.count('//') - 1 > 1 else 0,  # 28. hasdoubleslash
         0 if is_domain_ip else int(extracted.suffix in {'tk', 'ml', 'cf', 'ga', 'gq', 'xyz', 'top', 'cn', 'ru', 'work', 'club', 'site'}),  # 29. hasSuspiciousTld
         label  # 30. label
     ]
@@ -132,70 +127,3 @@ if __name__ == "__main__":
     data_train_feature.to_csv('src/data_processing/feature/data_train.csv',index=None)
     data_test_feature.to_csv('src/data_processing/feature/data_test.csv',index=None)
     print("✅ Trích xuất đặc trưng hoàn thành! 🚀")
-
-
-
-# # Tính toán các đặc trưng trên url
-# # 1.length: độ dài URL
-# length = length  
-# # 2.tachar: tỷ lệ ký tự đặc biệt trong URL
-# tachar = sum(1 for char in url if char in special_chars)
-# # 3.hasKeyWords: URL chứa từ khóa phổ biến
-# hasKeyWords = int(any(kw in url.lower() for kw in common_keywords)) 
-# # 5.tahex: tỷ lệ chuỗi hex trong URL
-# tahex = round(sum(len(match) for match in re.findall(hex_pattern, url)) / length,15) 
-# # 6.tadigit: tỷ lệ chữ số trong URL 
-# tadigit = round(sum(1 for char in url if char.isdigit()) / length ,15) 
-# # 7.numDots: số dấu chấm trong URL
-# numDots = url.count('.')
-# # 8.countUpcase: số ký tự in hoa trong URL
-# countUpcase = sum(1 for char in url if char.isupper())
-# # 9.numvo: tỷ lệ nguyên âm trong URL
-# numvo = round(sum(1 for char in url if char.lower() in "aeiou") / length,15)
-# # 10.numco: tỷ lệ phụ âm trong URL
-# numco = round(sum(1 for char in url if char.isalpha() and char.lower() not in "aeiou") / length,15)  
-# # 11.maxsub30: URL chứa chuỗi con dài >30 ký tự
-# maxsub30 = int(any(len(sub) > 30 for sub in re.findall(r'\S+', url))) 
-# # 12.rapath: độ dài đường dẫn so với toàn bộ URL 
-# rapath = round(len(parsed_url.path) / length,15) if parsed_url.path else 0 
-# # 13.haspro: có chứa http, https, www hay không
-# haspro = 1 if urlparse(url).scheme in {"http", "https"} or parsed_url.netloc.startswith("www.") else 0
-# # 14.hasref: URL chứa tham số theo dõi
-# # hasref = int(any(kw in parsed_url.query.lower() for kw in ["ref=", "cdm=", "track=", "utm="]) 
-# #             and "href=" not in parsed_url.query.lower() 
-# #             and "notrack=1" not in parsed_url.query.lower())
-
-# # Đặc trưng tên miền
-# # 15.hasIP: URL chứa địa chỉ IP
-# # hasIP = int(is_domain_ip is not None)  
-# # # 16.hasport: URL có chứa số cổng
-# # hasport = int(parsed_url.port is not None)  
-# # 17.numsdm: số lượng subdomain trong tên miền
-# numsdm = 0 if is_domain_ip else domain.count('.') - 1 
-# # 18.radomain: tỷ lệ độ dài của domain so với tên miền
-# radomain = round(len(domain) / length if domain else 0,15)  
-# # 19.tinyUrl: URL là dịch vụ rút gọn
-# tinyUrl= int(domain in short_url_services)  
-# # 20.tanv: tỷ lệ nguyên âm trong tên miền
-# tanv = round(sum(1 for char in domain if char in "aeiou") / len(domain),15) if domain else 0  
-# # 21.tanco: tỷ lệ phụ âm trong tên miền
-# tanco = round(sum(1 for char in domain if char.isalpha() and char.lower() not in "aeiou") / len(domain),15) if domain else 0  
-# # 22.tandi: tỷ lệ chữ số trong tên miền
-# tandi = round(sum(1 for char in domain if char.isdigit()) / len(domain),15) if domain else 0 
-# # 23.tansc: tỷ lệ ký tự đặc biệt trong tên miền
-# tansc = round(sum(1 for char in domain if char in special_chars_domain) / len(domain),15) if domain else 0  
-# # 24.is_digit: tên miền bắt đầu bằng số
-# # is_digit = int(domain[0].isdigit()) if domain else 0  
-# # 25.len: độ dài tên miền
-# domain_length = len(domain) if domain else 0  
-# # 26.ent_char: entropy của ký tự trong tên miền
-# ent_char = round(-sum(p * math.log2(p) for p in domain_char_probabilities.values()),15) if domain else 0 
-# # 27.eod của tên miền
-# eod = round(sum(domain.count(c) * char_probabilities.get(c, 0) for c in domain) / len(domain),15) if domain and char_probabilities else 0
-# # 28.rank: tên miền thuộc top 100k của Tranco
-# rank = 0 if is_domain_ip else int( extracted.registered_domain in top_100k_tranco_list) 
-# # 29.tld: tên miền thuộc TLD phổ biến
-# tld = 0 if is_domain_ip else int(extracted.suffix in {"com", "net", "org", "edu", "gov"})  
-# # 30.hasdoubleslash=1 if url.count('//') - 1 > 1 else 0
-# # 31:hasSuspiciousTld: một số tld phổ biến của url phishing
-# hasSuspiciousTld =0 if is_domain_ip else int( extracted.suffix in {'tk', 'ml', 'cf', 'ga', 'gq'})

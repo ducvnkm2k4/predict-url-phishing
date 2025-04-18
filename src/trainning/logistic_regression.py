@@ -28,7 +28,7 @@ def train_logistic_regression(data_train, data_test):
     # Đánh giá
     accuracy = accuracy_score(y_test, y_pred)
     conf_matrix = confusion_matrix(y_test, y_pred)
-    class_report = classification_report(y_test, y_pred)
+    class_report = classification_report(y_test, y_pred,digits=4)
 
     # Lưu mô hình và scaler
     dump(best_model, "src/model/model/logistic_regression.pkl")

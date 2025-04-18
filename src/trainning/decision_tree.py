@@ -51,7 +51,7 @@ def train_decision_tree(data_train, data_test, is_find_best_model=False):
 
     # Đánh giá mô hình
     accuracy = accuracy_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
+    report = classification_report(y_test, y_pred,digits=4)
     matrix = confusion_matrix(y_test, y_pred)
 
     # Lưu mô hình

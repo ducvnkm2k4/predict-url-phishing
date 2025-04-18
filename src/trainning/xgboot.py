@@ -26,7 +26,7 @@ def train_xgboost(data_train, data_test):
     # Đánh giá
     accuracy = accuracy_score(y_test, y_pred)
     conf_matrix = confusion_matrix(y_test, y_pred)
-    class_report = classification_report(y_test, y_pred)
+    class_report = classification_report(y_test, y_pred,digits=4)
 
     # Lưu mô hình
     dump(best_model, "src/model/model/xgboost.pkl")
