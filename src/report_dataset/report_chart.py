@@ -74,16 +74,14 @@ def show_probplot(data, feature_names):
     plt.tight_layout()
     plt.show()
 # Đọc dữ liệu
-data_train = pd.read_csv('src/data_processing/feature/data_train_scaled.csv')
+data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
 
 feature_names = [
-    "length", "tachar",  "tahex", 
-    "tadigit", "numDots", "countUpcase", "numvo", "numco",
-    "rapath", 
-    "numsdm", "radomain", "tanv", 
-    "tanco", "tandi", "tansc",
-    "domain_len", "ent_char", "eod", 
-]
+    "length", "tachar", "hasKeyWords", "tahex", "tadigit", "numDots", "countUpcase",
+    "numvo", "numco", "maxsub30", "rapath", 'http','https','www',  "numsdm",
+    "radomain", "tanv", "tanco", "tandi", "tansc",  "domain_len",
+    "ent_char", "eod", "rank", "tld", "hasSuspiciousTld"
+    ]
 show_histogram(data_train,feature_names)
 
 

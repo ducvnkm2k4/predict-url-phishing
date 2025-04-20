@@ -2,8 +2,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import pandas as pd
 from joblib import dump
-from skl2onnx import convert_sklearn
-from skl2onnx.common.data_types import FloatTensorType
 import numpy as np
 
 def train_random_forest(data_train, data_test):
@@ -26,13 +24,6 @@ def train_random_forest(data_train, data_test):
 
     # Lưu mô hình định dạng joblib
     dump(model, "src/model/model/random_forest.pkl")
-
-    # ✅ Chuyển đổi và lưu mô hình dưới dạng ONNX
-    initial_type = [('float_input', FloatTensorType([None, X_train.shape[1]]))]
-    onnx_model = convert_sklearn(model, initial_types=initial_type)
-
-    with open("src/model/model/random_forest.onnx", "wb") as f:
-        f.write(onnx_model.SerializeToString())
 
     # Đánh giá mô hình
     accuracy = accuracy_score(y_test, y_pred)
