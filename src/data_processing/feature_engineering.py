@@ -22,7 +22,6 @@ common_keywords = {
     "update", "verify", "auth", "security", "confirm", "submit", "payment", 
     "invoice", "billing", "transaction", "transfer", "refund", "wire"
 }
-short_url_services = set(pd.read_csv('src/dataset/short_url_services.csv').drop_duplicates().iloc[:, 0])
 redirect_keywords = {"redirect=", "url=", "next=", "dest=", "destination=", "forward=", "go=", "to="}
 ip_pattern = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
 
