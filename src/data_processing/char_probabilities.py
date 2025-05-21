@@ -17,7 +17,7 @@ def char_pro():
 
     char_prob_df.sort_values(by='Character', ascending=True, inplace=True)
 
-    char_prob_df.to_csv("src/dataset/tranco_list/char_probabilities.csv", index=False)
+    char_prob_df.to_csv('src/output/tranco_char_probabilities.csv', index=False)
 
     print(char_prob_df)
     return char_prob_df

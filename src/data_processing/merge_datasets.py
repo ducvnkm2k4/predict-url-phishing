@@ -1,13 +1,26 @@
 import pandas as pd
 import os
+from urllib.parse import urlparse
+
+def valid_url(url):
+    try:
+        parsed = urlparse(str(url))
+        # Có scheme http/https
+        if parsed.scheme in ["http", "https"]:
+            return True
+        # Không có scheme, nhưng netloc hoặc path bắt đầu bằng www.
+        if not parsed.scheme:
+            if parsed.netloc.startswith("www."):
+                return True
+            # Trường hợp url kiểu www.example.com (netloc rỗng, path chứa domain)
+            if parsed.path.startswith("www."):
+                return True
+        return False
+    except Exception:
+        return False
 
 def merge_dataset():
-    os.makedirs("src/data_processing/raw", exist_ok=True)
-    # data1=pd.read_csv("dataset/data/data1/malicious_phish.csv")
-    # data1["label"]=1
-    # data1.loc[data1['type']!="benign","label"] = 0
-    # del data1["type"]
-
+    os.makedirs("src/output/data", exist_ok=True)
     # Đọc dataset 2
     data2 = pd.read_csv("src/dataset/data/data2/dataset_phishing.csv")[["url", "status"]]
     data2["label"] = (data2["status"] == "legitimate").astype(int)
@@ -46,6 +59,8 @@ def merge_dataset():
     data_train = pd.concat([data2, data3, data4, data6, data8_test], ignore_index=True)
     data_train = data_train.dropna(subset=["url", "label"])
     data_train = data_train[data_train["url"].apply(lambda x: isinstance(x, str) and x.isascii())]
+    # Lọc url hợp lệ
+    data_train = data_train[data_train["url"].apply(valid_url)]
     print('-------------------data train--------------------------')
     print(data_train)
     data_train = data_train.drop_duplicates()
@@ -55,6 +70,7 @@ def merge_dataset():
     # Tạo data_test
     data_test = data7
     data_test = data_test[data_test["url"].apply(lambda x: x.isascii())]
+    data_test = data_test[data_test["url"].apply(valid_url)]
     print('----------------------data test---------------------------')
     print(data_test)
     data_test = data_test.drop_duplicates()
@@ -65,5 +81,5 @@ def merge_dataset():
 if __name__ == "__main__":
     data_train,data_test= merge_dataset()
     # Lưu dữ liệu đã xử lý
-    data_train.to_csv("src/data_processing/raw/data_train_raw.csv", index=False)
-    data_test.to_csv("src/data_processing/raw/data_test_raw.csv", index=False)
+    data_train.to_csv('src/output/data/data_train_raw.csv', index=False)
+    data_test.to_csv('src/output/data/data_test_raw.csv', index=False)

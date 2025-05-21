@@ -13,7 +13,7 @@ def train_xgboost(data_train, data_test):
 
     print("🚀 Đang huấn luyện XGBoost với tham số mặc định...")
     best_model = xgb.XGBClassifier(
-        n_estimators=300,
+        n_estimators=350,
         learning_rate=0.01,
         eval_metric='logloss',
         random_state=42,
@@ -29,14 +29,14 @@ def train_xgboost(data_train, data_test):
     class_report = classification_report(y_test, y_pred,digits=4)
 
     # Lưu mô hình
-    dump(best_model, "src/model/model/xgboost.pkl")
+    dump(best_model, "src/output/model/xgboost.pkl")
 
 
     # In kết quả
     print(f"✅ Độ chính xác trên tập test: {accuracy:.4f}")
     print("\n📌 Ma trận nhầm lẫn:\n", conf_matrix)
     print("\n📊 Báo cáo phân loại:\n", class_report)
-    with open("src/model/report/metrics_report_xgboot.txt", "w", encoding="utf-8") as f:
+    with open("src/output/report/metrics_report_xgboot.txt", "w", encoding="utf-8") as f:
 
         f.write("------------------xgboot-----------------------")
         f.write(f"✅ Độ chính xác trên tập test: {accuracy:.4f}\n\n")
@@ -47,8 +47,8 @@ def train_xgboost(data_train, data_test):
 
 if __name__ == "__main__":
     # Load dữ liệu
-    data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
-    data_test = pd.read_csv('src/data_processing/feature/data_test.csv')
+    data_train = pd.read_csv("src/output/data/data_train.csv")
+    data_test = pd.read_csv("src/output/data/data_test.csv")
     # Gọi hàm để huấn luyện
     train_xgboost(data_train, data_test)
 

@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Đọc dữ liệu sau khi loại bỏ trùng lặp
-data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
+data_train = pd.read_csv('src/output/data/data_train.csv')
 
 # Tạo bảng thống kê cơ bản
 report = data_train.describe().T
@@ -16,9 +16,8 @@ report = report.round(3)
 report = report.reset_index()
 report = report.rename(columns={"index": "feature_name"})
 
-
 # In báo cáo
 print(report)
 
 # Lưu file CSV, có cột 'feature_name'
-report.to_csv('src/report_dataset/report_data_train.csv', index=False)
+report.to_csv('src/output/data_analysis/report_data_train.csv', index=False)

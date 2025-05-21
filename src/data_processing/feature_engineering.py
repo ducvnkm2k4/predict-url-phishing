@@ -23,7 +23,7 @@ common_keywords = {
     "invoice", "billing", "transaction", "transfer", "refund", "wire"
 }
 redirect_keywords = {"redirect=", "url=", "next=", "dest=", "destination=", "forward=", "go=", "to="}
-ip_pattern = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
+ip_pattern = re.compile(r'^(?:[0-9]{1,3}/.){3}[0-9]{1,3}$')
 
 
 # ⭐ Init worker cho multiprocessing
@@ -58,7 +58,7 @@ def extract_features(params):
         sum(c.isupper() for c in url),  # 7. countUpcase
         round(sum(c in "aeiou" for c in url.lower()) / length, 15),  # 8. numvo
         round(sum(c.isalpha() and c.lower() not in "aeiou" for c in url) / length, 15),  # 9. numco
-        int(any(len(s) > 30 for s in re.findall(r'\S+', url))),  # 10. maxsub30
+        int(any(len(s) > 30 for s in re.findall(r'/S+', url))),  # 10. maxsub30
         round(len(parsed_url.path) / length, 15) if parsed_url.path else 0,  # 11. rapath
         1 if urlparse(url).scheme == "http"  else 0,
         1 if urlparse(url).scheme == "https" else 0,
@@ -95,14 +95,14 @@ def parallel_feature_extraction(url_list, label_list, char_probs, top_domains):
 
 if __name__ == "__main__":
     # Load dữ liệu
-    data_train = pd.read_csv('src/data_processing/raw/data_train_raw.csv')
-    data_test = pd.read_csv('src/data_processing/raw/data_test_raw.csv')
+    data_train = pd.read_csv('src/output/data/data_train_raw.csv')
+    data_test = pd.read_csv('src/output/data/data_test_raw.csv')
 
     # Đọc danh sách top 100k domain từ Tranco
     top_100k_tranco_list = set(pd.read_csv('src/dataset/tranco_list/tranco_5897N.csv', header=None).iloc[:, 1].tolist())
 
     # Đọc bảng xác suất ký tự
-    char_probabilities = pd.read_csv('src/dataset/tranco_list/char_probabilities.csv').set_index('Character')['Probability'].to_dict()
+    char_probabilities = pd.read_csv('src/output/tranco_char_probabilities.csv').set_index('Character')['Probability'].to_dict()
 
     # Trích xuất đặc trưng
     extracted_features_train = parallel_feature_extraction(data_train['url'], data_train['label'], char_probabilities, top_100k_tranco_list)
@@ -123,6 +123,6 @@ if __name__ == "__main__":
     data_train_feature = data_train_feature.drop_duplicates()
     data_test_feature = data_test_feature.drop_duplicates()
 
-    data_train_feature.to_csv('src/data_processing/feature/data_train.csv',index=None)
-    data_test_feature.to_csv('src/data_processing/feature/data_test.csv',index=None)
+    data_train_feature.to_csv('src/output/data/data_train.csv',index=None)
+    data_test_feature.to_csv('src/output/data/data_test.csv',index=None)
     print("✅ Trích xuất đặc trưng hoàn thành! 🚀")

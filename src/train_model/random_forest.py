@@ -13,7 +13,7 @@ def train_random_forest(data_train, data_test):
     y_test = data_test['label']
 
     # Khởi tạo mô hình
-    model = RandomForestClassifier(n_estimators=300, max_depth=15, random_state=42, n_jobs=-1)
+    model = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_jobs=-1)
 
     # Huấn luyện mô hình
     print("🚀 Đang huấn luyện RandomForest...")
@@ -23,7 +23,7 @@ def train_random_forest(data_train, data_test):
     y_pred = model.predict(X_test)
 
     # Lưu mô hình định dạng joblib
-    dump(model, "src/model/model/random_forest.pkl")
+    dump(model, "src/output/model/random_forest.pkl")
 
     # Đánh giá mô hình
     accuracy = accuracy_score(y_test, y_pred)
@@ -36,7 +36,7 @@ def train_random_forest(data_train, data_test):
     print("\n📊 Báo cáo phân loại:\n", class_report)
 
     # Ghi vào file
-    with open("src/model/report/metrics_report_random_forest.txt", "w", encoding="utf-8") as f:
+    with open("src/output/report/metrics_report_random_forest.txt", "w", encoding="utf-8") as f:
         f.write("------------------random forest-----------------------\n")
         f.write(f"✅ Độ chính xác trên tập test: {accuracy:.4f}\n\n")
         f.write("📌 Ma trận nhầm lẫn:\n")
@@ -46,8 +46,8 @@ def train_random_forest(data_train, data_test):
 
 if __name__ == "__main__":
     # Load dữ liệu huấn luyện và kiểm tra
-    data_train = pd.read_csv('src/data_processing/feature/data_train.csv')
-    data_test = pd.read_csv('src/data_processing/feature/data_test.csv')
+    data_train = pd.read_csv("src/output/data/data_train.csv")
+    data_test = pd.read_csv("src/output/data/data_test.csv")
 
     # Gọi hàm huấn luyện
     train_random_forest(data_train, data_test)

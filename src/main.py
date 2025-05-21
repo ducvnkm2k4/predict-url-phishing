@@ -1,33 +1,27 @@
 import os
 import pandas as pd  
 from data_processing.merge_datasets import merge_dataset
-from data_processing.merge_datasets import merge_dataset
 from data_processing.char_probabilities import char_pro
 from data_processing.feature_engineering import parallel_feature_extraction
-from trainning.random_forest import train_random_forest
-from trainning.decision_tree import train_decision_tree
-from trainning.xgboot import train_xgboost
-from trainning.support_vector_machine import train_svm
-from trainning.KNN import train_knn
-from trainning.logistic_regression import train_logistic_regression
-import pandas as pd  
+from train_model.random_forest import train_random_forest
+from train_model.decision_tree import train_decision_tree
+from train_model.train_xgboost import train_xgboost
+from train_model.support_vector_machine import train_svm
+from train_model.KNN import train_knn
+from train_model.logistic_regression import train_logistic_regression
 import sys
 
 sys.dont_write_bytecode = True
 
 def train_model(data_train,data_test):
-    # train_decision_tree(data_train,data_test)
-    # train_xgboost(data_train,data_test)
+    train_decision_tree(data_train,data_test)
+    train_xgboost(data_train,data_test)
     train_random_forest(data_train,data_test)
-    # train_knn(data_train,data_test)
-    # train_logistic_regression(data_train,data_test)
-    # train_svm(data_train,data_test)
+    train_knn(data_train,data_test)
+    train_logistic_regression(data_train,data_test)
+    train_svm(data_train,data_test)
 
 if __name__ == "__main__":
-    os.makedirs('src/data_processing/feature',exist_ok=True)
-    os.makedirs('src/data_processing/raw',exist_ok=True)
-    os.makedirs('src/model/model',exist_ok=True)
-    os.makedirs('src/model/report',exist_ok=True)
     data_train,data_test= merge_dataset()
     print('---------complete merge dataset------------')
     char_probabilities = char_pro().set_index('Character')['Probability'].to_dict()
@@ -37,7 +31,6 @@ if __name__ == "__main__":
 
     extracted_features_train = parallel_feature_extraction(data_train['url'], data_train['label'], char_probabilities, top_100k_tranco_list)
     extracted_features_test = parallel_feature_extraction(data_test['url'], data_test['label'], char_probabilities, top_100k_tranco_list)
-
 
     feature_names = [
     "length", "tachar", "hasKeyWords", "tahex", "tadigit", "numDots", "countUpcase",
@@ -51,12 +44,12 @@ if __name__ == "__main__":
     data_train_feature = pd.DataFrame(extracted_features_train, columns=feature_names)
     data_test_feature = pd.DataFrame(extracted_features_test, columns=feature_names)
 
-    data_train_feature=data_train_feature.drop_duplicates()
-    data_test_feature=data_test_feature.drop_duplicates()
+    data_train_feature=data_train_feature.drop_duplicates().dropna()
+    data_test_feature=data_test_feature.drop_duplicates().dropna()
     print('------------------complete extract feature--------------------')
     train_model(data_train_feature,data_test_feature)
     print('--------------------complete----------------------')
-    data_train_feature.to_csv('src/data_processing/feature/data_train.csv',index=None)
-    data_test_feature.to_csv('src/data_processing/feature/data_test.csv',index=None)
-    data_train.to_csv("src/data_processing/raw/data_train_raw.csv", index=None)
-    data_test.to_csv("src/data_processing/raw/data_test_raw.csv", index=None)
+    data_train_feature.to_csv('src/output/data/data_train.csv', index=False)
+    data_test_feature.to_csv('src/output/data/data_test.csv', index=False)
+    data_train.to_csv('src/output/data/data_train_raw.csv', index=False)
+    data_test.to_csv('src/output/data/data_test_raw.csv', index=False)
