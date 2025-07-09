@@ -3,8 +3,10 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.preprocessing import StandardScaler
 from joblib import dump
 import pandas as pd
-
+import os
 def train_logistic_regression(data_train, data_test):
+    os.makedirs('src/output/model',exist_ok=True)
+    os.makedirs('src/output/report',exist_ok=True)
     # Tách đặc trưng và nhãn
     X_train = data_train.drop(columns=['label'])
     y_train = data_train['label']

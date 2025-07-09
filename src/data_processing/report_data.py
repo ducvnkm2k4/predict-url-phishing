@@ -1,5 +1,6 @@
 import pandas as pd
-
+import os
+os.makedirs('src/output/data_analysis',exist_ok=True)
 # Đọc dữ liệu sau khi loại bỏ trùng lặp
 data_train = pd.read_csv('src/output/data/data_train.csv')
 

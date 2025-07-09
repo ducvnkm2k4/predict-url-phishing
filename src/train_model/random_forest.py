@@ -3,8 +3,10 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import pandas as pd
 from joblib import dump
 import numpy as np
-
+import os
 def train_random_forest(data_train, data_test):
+    os.makedirs('src/output/model',exist_ok=True)
+    os.makedirs('src/output/report',exist_ok=True)
     # Tách đặc trưng và nhãn
     X_train = data_train.drop(columns=['label'])
     y_train = data_train['label']
@@ -13,7 +15,7 @@ def train_random_forest(data_train, data_test):
     y_test = data_test['label']
 
     # Khởi tạo mô hình
-    model = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_jobs=-1)
+    model = RandomForestClassifier(n_estimators=225, max_depth=15, random_state=42, n_jobs=-1)
 
     # Huấn luyện mô hình
     print("🚀 Đang huấn luyện RandomForest...")

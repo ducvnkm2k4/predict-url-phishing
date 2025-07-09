@@ -82,7 +82,7 @@ feature_names = [
     "radomain", "tanv", "tanco", "tandi", "tansc",  "domain_len",
     "ent_char", "eod", "rank", "tld", "hasSuspiciousTld"
     ]
-show_histogram(data_train,feature_names)
+show_histogram(data_train,'label')
 
 
 # feature=feature_names[0]

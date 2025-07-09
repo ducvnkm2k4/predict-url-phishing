@@ -3,8 +3,10 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import pandas as pd
 from joblib import dump
-
+import os
 def train_decision_tree(data_train, data_test, is_find_best_model=False):
+    os.makedirs('src/output/model',exist_ok=True)
+    os.makedirs('src/output/report',exist_ok=True)
     # Tách đặc trưng (X) và nhãn (y)
     X_train = data_train.drop(columns=['label'])
     y_train = data_train['label']

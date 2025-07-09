@@ -1,0 +1,1 @@
+https://github.com/amitkroutthedev/phishing-url-detection-ml/tree/main/extracted_dataset
